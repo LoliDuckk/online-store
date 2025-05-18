@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { Context } from "../main";
 import { observer } from "mobx-react-lite";
 import { getBasket, removeFromBasket, updateQuantity } from "../http/basketApi";
-import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
+import { Button, Container, Image, Table } from "react-bootstrap";
 
 const BasketPage = observer(() => {
   const { basket } = useContext(Context);
@@ -32,40 +32,52 @@ const BasketPage = observer(() => {
         <p>Корзина пуста</p>
       ) : (
         <>
-          {basket.items.map(({ id, device, quantity }) => (
-            <Card key={id} className="mb-3">
-              <Row className="align-items-center">
-                <Col md={2}>
-                  <Image
-                    src={import.meta.env.VITE_API_URL + device.img}
-                    width={100}
-                  />
-                </Col>
-                <Col md={4}>{device.name}</Col>
-                <Col md={2}>{device.price} ₽</Col>
-                <Col md={2}>
-                  <select
-                    value={quantity}
-                    onChange={(e) => handleQuantityChange(id, +e.target.value)}
-                  >
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
-                </Col>
-                <Col md={2}>
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => handleRemove(id)}
-                  >
-                    Удалить
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-          ))}
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Изображение</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Количесво</th>
+                <th>Итоговая цена</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {basket.items.map(({ id, device, quantity }) => (
+                <tr key={id}>
+                  <td>
+                    <Image
+                      src={import.meta.env.VITE_API_URL + device?.img}
+                      width={100}
+                      height={100}
+                    />
+                  </td>
+                  <td>{device?.name}</td>
+                  <td>{device?.price}</td>
+                  <td>
+                    <input
+                      style={{ border: "none" }}
+                      value={quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(id, +e.target.value)
+                      }
+                      type="number"
+                    />
+                  </td>
+                  <td>{device?.price * quantity}</td>
+                  <td>
+                    <Button
+                      variant="outline-danger"
+                      onClick={() => handleRemove(id)}
+                    >
+                      Удалить
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
           <h4 className="text-end mt-3">Итого: {basket.totalPrice} ₽</h4>
           <div className="text-end">
             <Button variant="success">Оформить заказ</Button>

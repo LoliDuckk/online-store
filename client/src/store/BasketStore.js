@@ -11,7 +11,12 @@ export default class BasketStore {
   }
 
   addItem(item) {
-    this._items.push(item);
+    const existingItem = this._items.find((i) => i.deviceId === item.deviceId);
+    if (existingItem) {
+      existingItem.quantity += item.quantity;
+    } else {
+      this._items.push(item);
+    }
   }
 
   updateQuantity(id, quantity) {
@@ -21,7 +26,7 @@ export default class BasketStore {
 
   get totalPrice() {
     return this._items.reduce(
-      (sum, item) => sum + item.device.price * item.quantity,
+      (sum, item) => sum + item.device?.price * item.quantity,
       0
     );
   }
