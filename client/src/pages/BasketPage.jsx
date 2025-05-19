@@ -65,7 +65,9 @@ const BasketPage = observer(() => {
                       type="number"
                     />
                   </td>
-                  <td>{device?.price * quantity}</td>
+                  <td>
+                    {device?.price && quantity ? device.price * quantity : 0}
+                  </td>
                   <td>
                     <Button
                       variant="outline-danger"
