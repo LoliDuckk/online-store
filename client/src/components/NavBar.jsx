@@ -25,10 +25,12 @@ const NavBar = observer(() => {
   };
 
   useEffect(() => {
-    getBasket().then((data) => {
-      basket.setItems(data.basket_devices || []);
-    });
-  }, []);
+    if (user.isAuth) {
+      getBasket().then((data) => {
+        basket.setItems(data.basket_devices || []);
+      });
+    }
+  }, [user.isAuth]);
 
   return (
     <>
@@ -41,7 +43,7 @@ const NavBar = observer(() => {
             Catalog
           </NavLink>
           {user.isAuth ? (
-            <>
+            <div className="d-flex">
               <Button
                 style={{
                   position: "relative",
@@ -101,7 +103,7 @@ const NavBar = observer(() => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-            </>
+            </div>
           ) : (
             <>
               <Button
