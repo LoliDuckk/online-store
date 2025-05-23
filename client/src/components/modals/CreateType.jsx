@@ -4,9 +4,17 @@ import { createType } from "../../http/deviceApi";
 
 const CreateType = ({ show, onHide }) => {
   const [value, setValue] = useState("");
+  const [file, setFile] = useState(null);
+
+  const selectFile = (e) => {
+    setFile(e.target.files[0]);
+  };
 
   const addType = () => {
-    createType({ name: value }).then((data) => {
+    const formData = new FormData();
+    formData.append("name", value);
+    formData.append("img", file);
+    createType(formData).then((data) => {
       setValue("");
       onHide();
     });
@@ -26,6 +34,7 @@ const CreateType = ({ show, onHide }) => {
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
+          <Form.Control className="mt-3" type="file" onChange={selectFile} />
         </Form>
       </Modal.Body>
       <Modal.Footer>

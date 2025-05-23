@@ -1,10 +1,15 @@
+const uuid = require("uuid");
+const path = require("path");
 const { Type } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class TypeController {
   async create(req, res) {
-    const { name } = req.body;
-    const type = await Type.create({ name });
+    let { name } = req.body;
+    const { img } = req.files;
+    let fileName = uuid.v4() + ".jpg";
+    img.mv(path.resolve(__dirname, "..", "static", fileName));
+    const type = await Type.create({ name, img: fileName });
     return res.json(type);
   }
 
