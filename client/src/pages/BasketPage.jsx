@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { Context } from "../main";
 import { observer } from "mobx-react-lite";
 import { getBasket, removeFromBasket, updateQuantity } from "../http/basketApi";
-import { Button, Container, Image, Table } from "react-bootstrap";
+import { Button, Container, Image, Table, Form } from "react-bootstrap";
 
 const BasketPage = observer(() => {
   const { basket } = useContext(Context);
@@ -26,21 +26,30 @@ const BasketPage = observer(() => {
   };
 
   return (
-    <Container className="mt-3">
-      <h2>Ваша Корзина</h2>
+    <Container className="mt-4">
+      <h2 className="mb-4 fw-bold fs-2">Ваша Корзина</h2>
       {basket.items.length === 0 ? (
-        <p>Корзина пуста</p>
+        <p className="fs-2 text-muted">
+          Ваша корзина пуста. Добавьте несколько товаров в корзину, нажав кнопку
+          ‘В корзину‘
+        </p>
       ) : (
         <>
-          <Table striped bordered hover>
-            <thead>
+          <Table
+            striped
+            bordered
+            hover
+            responsive
+            className="align-middle text-center fs-5"
+          >
+            <thead className="table-dark text-white fs-5">
               <tr>
                 <th>Изображение</th>
                 <th>Название</th>
                 <th>Цена</th>
-                <th>Количесво</th>
+                <th>Количество</th>
                 <th>Итоговая цена</th>
-                <th></th>
+                <th>Действия</th>
               </tr>
             </thead>
             <tbody>
@@ -51,26 +60,35 @@ const BasketPage = observer(() => {
                       src={import.meta.env.VITE_API_URL + device?.img}
                       width={100}
                       height={100}
+                      style={{ objectFit: "cover" }}
+                      rounded
                     />
                   </td>
-                  <td>{device?.name}</td>
-                  <td>{device?.price}</td>
+                  <td className="fw-semibold">{device?.name}</td>
+                  <td>{device?.price} ₽</td>
                   <td>
-                    <input
-                      style={{ border: "none" }}
+                    <Form.Control
+                      type="number"
                       value={quantity}
                       onChange={(e) =>
                         handleQuantityChange(id, +e.target.value)
                       }
-                      type="number"
+                      style={{
+                        width: "80px",
+                        margin: "0 auto",
+                        fontWeight: "500",
+                      }}
+                      min={1}
                     />
                   </td>
-                  <td>
-                    {device?.price && quantity ? device.price * quantity : 0}
+                  <td className="fw-semibold">
+                    {device?.price && quantity ? device.price * quantity : 0} ₽
                   </td>
                   <td>
                     <Button
                       variant="outline-danger"
+                      size="sm"
+                      className="fw-bold"
                       onClick={() => handleRemove(id)}
                     >
                       Удалить
@@ -80,9 +98,12 @@ const BasketPage = observer(() => {
               ))}
             </tbody>
           </Table>
-          <h4 className="text-end mt-3">Итого: {basket.totalPrice} ₽</h4>
-          <div className="text-end">
-            <Button variant="success">Оформить заказ</Button>
+
+          <div className="text-end mt-4">
+            <h4 className="fw-bold fs-3">Итого: {basket.totalPrice} ₽</h4>
+            <Button variant="success" size="lg" className="fw-bold mt-2">
+              Оформить заказ
+            </Button>
           </div>
         </>
       )}
