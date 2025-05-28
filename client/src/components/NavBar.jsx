@@ -8,10 +8,13 @@ import {
   SHOP_ROUTE,
   PROFILE_ROUTE,
   BASKET_ROUTE,
+  ADMIN_ROUTE,
 } from "../utils/consts";
 import { observer } from "mobx-react-lite";
+import logoIcon from "../assets/logo.svg";
 import profileIcon from "../assets/user.svg";
 import basketIcon from "../assets/basket.svg";
+import cmsIcon from "../assets/cms.svg";
 import { getBasket } from "../http/basketApi";
 
 const NavBar = observer(() => {
@@ -21,6 +24,7 @@ const NavBar = observer(() => {
   const logOut = () => {
     user.setUser({});
     user.setIsAuth(false);
+    user.setIsAdmin(false);
     localStorage.removeItem("token");
   };
 
@@ -36,14 +40,36 @@ const NavBar = observer(() => {
     <>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <NavLink style={{ color: "white" }} to={HOME_ROUTE}>
-            DNS 2
+          <NavLink
+            className="fs-1 text-decoration-none d-flex align-items-center"
+            style={{ color: "white" }}
+            to={HOME_ROUTE}
+          >
+            <Image src={logoIcon} height={50} style={{ marginRight: "10px" }} />
+            <span>Techno</span>
           </NavLink>
           <NavLink style={{ color: "white" }} to={SHOP_ROUTE}>
             Catalog
           </NavLink>
           {user.isAuth ? (
-            <div className="d-flex">
+            <div className="d-flex align-items-end">
+              {user.isAdmin ? (
+                <Button
+                  style={{
+                    position: "relative",
+                    marginRight: "10px",
+                    background: "none",
+                    border: "none",
+                  }}
+                  onClick={() => navigate(ADMIN_ROUTE)}
+                >
+                  <Image src={cmsIcon} height={40} />
+                  <br />
+                  <span className="fs-5">Админ панель</span>
+                </Button>
+              ) : (
+                ""
+              )}
               <Button
                 style={{
                   position: "relative",
@@ -53,9 +79,9 @@ const NavBar = observer(() => {
                 }}
                 onClick={() => navigate(BASKET_ROUTE)}
               >
-                <Image src={basketIcon} height={30} />
+                <Image className="mt-1" src={basketIcon} height={40} />
                 <br />
-                <span>Корзина</span>
+                <span className="fs-5">Корзина</span>
                 {basket.items.length > 0 && (
                   <div
                     style={{
@@ -80,25 +106,31 @@ const NavBar = observer(() => {
 
               <Dropdown>
                 <Dropdown.Toggle style={{ background: "none", border: "none" }}>
-                  <Image src={profileIcon} height={30} />
+                  <Image src={profileIcon} height={40} />
                   <br />
-                  <span>Профиль</span>
+                  <span className="fs-5">Профиль</span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
+                    className="fs-5"
                     as="button"
                     onClick={() => navigate(PROFILE_ROUTE)}
                   >
                     Личный кабинет
                   </Dropdown.Item>
                   <Dropdown.Item
+                    className="fs-5"
                     as="button"
                     onClick={() => navigate(PROFILE_ROUTE)}
                   >
                     История заказов
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item as="button" onClick={() => logOut()}>
+                  <Dropdown.Item
+                    className="fs-5"
+                    as="button"
+                    onClick={() => logOut()}
+                  >
                     Выйти
                   </Dropdown.Item>
                 </Dropdown.Menu>

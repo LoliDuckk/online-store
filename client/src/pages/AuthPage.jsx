@@ -58,7 +58,10 @@ const AuthPage = observer(() => {
       }
       user.setUser(user);
       user.setIsAuth(true);
-      if (data.role === "ADMIN") navigate(ADMIN_ROUTE);
+      if (data.role === "ADMIN") {
+        user.setIsAdmin(true);
+        navigate(ADMIN_ROUTE);
+      }
       navigate(SHOP_ROUTE);
     } catch (e) {
       alert(e.response.data.message);
