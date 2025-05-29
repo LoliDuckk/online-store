@@ -79,7 +79,7 @@ const NavBar = observer(() => {
                 }}
                 onClick={() => navigate(BASKET_ROUTE)}
               >
-                <Image className="mt-1" src={basketIcon} height={40} />
+                <Image src={basketIcon} height={40} />
                 <br />
                 <span className="fs-5">Корзина</span>
                 {basket.items.length > 0 && (
@@ -143,8 +143,8 @@ const NavBar = observer(() => {
                 onClick={() => navigate(LOGIN_ROUTE)}
                 style={{ background: "none", border: "none" }}
               >
-                <Image src={profileIcon} height={30} />
-                <span>Войти</span>
+                <Image src={profileIcon} height={40} />
+                <span className="fs-5">Войти</span>
               </Button>
             </>
           )}
