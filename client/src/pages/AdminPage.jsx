@@ -2,21 +2,20 @@ import { Button, Container } from "react-bootstrap";
 import CreateType from "../components/modals/CreateType";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { Context } from "../main";
 
 export default function AdminPage() {
+  const { user } = useContext(Context);
   const navigate = useNavigate();
   const [typeVisible, setTypeVisible] = useState(false);
   const [brandVisible, setBrandVisible] = useState(false);
   const [deviceVisible, setDeviceVisible] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     try {
-      const { role } = jwtDecode(token);
-      if (role !== "ADMIN") navigate("/");
+      if (!user.isAdmin) navigate("/");
     } catch (error) {
       navigate("/");
     }

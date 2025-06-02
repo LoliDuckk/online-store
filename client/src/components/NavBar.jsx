@@ -26,6 +26,7 @@ const NavBar = observer(() => {
     user.setIsAuth(false);
     user.setIsAdmin(false);
     localStorage.removeItem("token");
+    navigate(LOGIN_ROUTE);
   };
 
   useEffect(() => {

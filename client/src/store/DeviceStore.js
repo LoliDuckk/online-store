@@ -28,9 +28,6 @@ export default class DeviceStore {
   setTotalCount(count) {
     this._totalCount = count;
   }
-  // setLimit(limit) {
-  //   this._limit = limit;
-  // }
 
   setSelectedType(type) {
     this.setPage(1);

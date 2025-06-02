@@ -19,7 +19,7 @@ const App = observer(() => {
         if (data.role === "ADMIN") user.setIsAdmin(true);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user.isAuth]);
 
   if (loading) {
     return <Spinner animation="grow" />;
