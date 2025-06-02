@@ -3,15 +3,21 @@ import { Context } from "../../main";
 import { Button, Col, Dropdown, Form, Modal, Row } from "react-bootstrap";
 import { createDevice, fetchBrands, fetchTypes } from "../../http/deviceApi";
 import { observer } from "mobx-react-lite";
+import { validateEmpty, validateFile } from "../../utils/validate";
 
 const CreateDevice = observer(({ show, onHide }) => {
   const { device } = useContext(Context);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
   const [file, setFile] = useState(null);
   const [brand, setBrand] = useState(null);
   const [type, setType] = useState(null);
   const [info, setInfo] = useState([]);
+  const [errors, setErrors] = useState({
+    name: "",
+    price: "",
+    file: "",
+  });
 
   useEffect(() => {
     fetchTypes().then((data) => device.setTypes(data));
@@ -35,6 +41,18 @@ const CreateDevice = observer(({ show, onHide }) => {
   };
 
   const addDevice = () => {
+    const newErrors = {
+      name: validateEmpty(name),
+      price: validateEmpty(price),
+      file: validateFile(file),
+    };
+
+    console.log(device.selectedType);
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((error) => error !== "")) return;
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price", `${price}`);
@@ -42,6 +60,9 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append("typeId", device.selectedType.id);
     formData.append("brandId", device.selectedBrand.id);
     formData.append("info", JSON.stringify(info));
+
+    device.setSelectedType({});
+    device.setSelectedBrand({});
 
     createDevice(formData).then((data) => onHide());
   };
@@ -54,7 +75,7 @@ const CreateDevice = observer(({ show, onHide }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form className="d-flex flex-column">
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
               {device.selectedType.name || "Выберите тип"}
@@ -91,6 +112,9 @@ const CreateDevice = observer(({ show, onHide }) => {
             className="mt-3"
             placeholder="Введите название устройства"
           />
+          {errors.name && (
+            <Form.Text className="text-danger">{errors.name}</Form.Text>
+          )}
           <Form.Control
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
@@ -98,7 +122,13 @@ const CreateDevice = observer(({ show, onHide }) => {
             placeholder="Введите стоимость устройства"
             type="number"
           />
+          {errors.name && (
+            <Form.Text className="text-danger">{errors.price}</Form.Text>
+          )}
           <Form.Control className="mt-3" type="file" onChange={selectFile} />
+          {errors.name && (
+            <Form.Text className="text-danger">{errors.file}</Form.Text>
+          )}
           <Button className="mt-3" variant="outline-dark" onClick={addInfo}>
             Добавить новое свойство
           </Button>

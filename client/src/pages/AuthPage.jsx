@@ -10,6 +10,11 @@ import { auth, registration } from "../http/userApi";
 import { useContext, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
+import {
+  validateLength,
+  validateEmail,
+  validateEmpty,
+} from "../utils/validate";
 
 const AuthPage = observer(() => {
   const { user } = useContext(Context);
@@ -25,24 +30,11 @@ const AuthPage = observer(() => {
     password: "",
   });
 
-  const validateLogin = (login) => {
-    return login.length >= 5 ? "" : "Минимум 5 символов";
-  };
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email) ? "" : "Введите корректный email";
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 5 ? "" : "Минимум 5 символов";
-  };
-
   const click = async () => {
     const newErrors = {
-      login: validateLogin(login),
-      email: isLogin ? "" : validateEmail(email),
-      password: validatePassword(password),
+      login: validateEmpty(login) || validateLength(login, 5),
+      email: isLogin ? "" : validateEmpty(email) || validateEmail(email),
+      password: validateEmpty(password) || validateLength(password, 5),
     };
 
     setErrors(newErrors);
