@@ -1,5 +1,6 @@
+// src/components/CategorySelector.jsx
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
 import { fetchTypes } from "../http/deviceApi";
@@ -10,14 +11,28 @@ import { SHOP_ROUTE } from "../utils/consts";
 const CategorySelector = observer(() => {
   const { device } = useContext(Context);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchTypes().then((data) => device.setTypes(data));
   }, []);
 
   const handleClick = (type) => {
-    device.setSelectedType(type);
-    navigate(SHOP_ROUTE);
+    // Получим текущие параметры (если есть), чтобы сохранить остальные (например, brandId, page, limit)
+    const params = new URLSearchParams(location.search);
+
+    // Задаём новый typeId, сбрасываем страницу на 1
+    params.set("typeId", type.id);
+    params.set("page", 1);
+
+    // Удаляем brandId, если надо сбросить выбор бренда?
+    // params.delete("brandId");
+
+    // Навигируем на /shop с новыми параметрами
+    navigate({
+      pathname: SHOP_ROUTE,
+      search: params.toString(),
+    });
   };
 
   return (
