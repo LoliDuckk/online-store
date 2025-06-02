@@ -3,7 +3,7 @@ const validateLength = (e, i) => {
 };
 
 const validateEmpty = (e) => {
-  return e.length !== 0 ? "" : "Поле не может быть пустым";
+  return e.length !== 0 ? "" : "Это поле обязательно к заполнению";
 };
 
 const validateEmail = (e) => {
@@ -12,7 +12,7 @@ const validateEmail = (e) => {
 };
 
 const validateFile = (e, i) => {
-  if (e === null || e === undefined) return "Выберите файл";
+  return e !== null ? "" : "Выберите файл";
 };
 
 export { validateLength, validateEmpty, validateEmail, validateFile };

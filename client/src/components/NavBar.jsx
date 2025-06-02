@@ -9,10 +9,11 @@ import {
   PROFILE_ROUTE,
   BASKET_ROUTE,
   ADMIN_ROUTE,
+  CATEGORY_ROUTE,
 } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import logoIcon from "../assets/logo.svg";
-import profileIcon from "../assets/user.svg";
+import profileIcon from "../assets/user2.svg";
 import basketIcon from "../assets/basket.svg";
 import cmsIcon from "../assets/cms.svg";
 import { getBasket } from "../http/basketApi";
@@ -39,7 +40,7 @@ const NavBar = observer(() => {
 
   return (
     <>
-      <Navbar bg="dark" data-bs-theme="dark">
+      <Navbar bg="black" data-bs-theme="dark">
         <Container>
           <NavLink
             className="fs-1 text-decoration-none d-flex align-items-center"
@@ -49,7 +50,7 @@ const NavBar = observer(() => {
             <Image src={logoIcon} height={50} style={{ marginRight: "10px" }} />
             <span>Techno</span>
           </NavLink>
-          <NavLink style={{ color: "white" }} to={SHOP_ROUTE}>
+          <NavLink style={{ color: "white" }} to={CATEGORY_ROUTE}>
             Catalog
           </NavLink>
           {user.isAuth ? (
@@ -64,7 +65,7 @@ const NavBar = observer(() => {
                   }}
                   onClick={() => navigate(ADMIN_ROUTE)}
                 >
-                  <Image src={cmsIcon} height={40} />
+                  <Image src={cmsIcon} height={30} />
                   <br />
                   <span className="fs-5">Админ панель</span>
                 </Button>
@@ -80,7 +81,7 @@ const NavBar = observer(() => {
                 }}
                 onClick={() => navigate(BASKET_ROUTE)}
               >
-                <Image src={basketIcon} height={40} />
+                <Image src={basketIcon} height={30} />
                 <br />
                 <span className="fs-5">Корзина</span>
                 {basket.items.length > 0 && (
@@ -107,7 +108,7 @@ const NavBar = observer(() => {
 
               <Dropdown>
                 <Dropdown.Toggle style={{ background: "none", border: "none" }}>
-                  <Image src={profileIcon} height={40} />
+                  <Image src={profileIcon} height={30} />
                   <br />
                   <span className="fs-5">Профиль</span>
                 </Dropdown.Toggle>
@@ -144,7 +145,7 @@ const NavBar = observer(() => {
                 onClick={() => navigate(LOGIN_ROUTE)}
                 style={{ background: "none", border: "none" }}
               >
-                <Image src={profileIcon} height={40} />
+                <Image src={profileIcon} height={30} />
                 <span className="fs-5">Войти</span>
               </Button>
             </>

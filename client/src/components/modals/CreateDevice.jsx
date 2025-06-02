@@ -47,8 +47,6 @@ const CreateDevice = observer(({ show, onHide }) => {
       file: validateFile(file),
     };
 
-    console.log(device.selectedType);
-
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((error) => error !== "")) return;
@@ -61,6 +59,9 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append("brandId", device.selectedBrand.id);
     formData.append("info", JSON.stringify(info));
 
+    setName("");
+    setPrice("");
+    setFile("null");
     device.setSelectedType({});
     device.setSelectedBrand({});
 
@@ -68,7 +69,14 @@ const CreateDevice = observer(({ show, onHide }) => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal
+      style={{ color: "white" }}
+      data-bs-theme="dark"
+      show={show}
+      onHide={onHide}
+      size="lg"
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Добавить тип

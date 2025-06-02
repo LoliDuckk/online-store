@@ -3,9 +3,12 @@ import { Context } from "../main";
 import { observer } from "mobx-react-lite";
 import { getBasket, removeFromBasket, updateQuantity } from "../http/basketApi";
 import { Button, Container, Image, Table, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { SHOP_ROUTE } from "../utils/consts";
 
 const BasketPage = observer(() => {
   const { basket } = useContext(Context);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getBasket().then((data) => {
@@ -26,13 +29,18 @@ const BasketPage = observer(() => {
   };
 
   return (
-    <Container className="mt-4">
+    <Container data-bs-theme="dark" className="mt-4" style={{ color: "white" }}>
       <h2 className="mb-4 fw-bold fs-2">Ваша Корзина</h2>
       {basket.items.length === 0 ? (
-        <p className="fs-2 text-muted">
-          Ваша корзина пуста. Добавьте несколько товаров в корзину, нажав кнопку
-          ‘В корзину‘
-        </p>
+        <>
+          <p className="fs-4">
+            Ваша корзина пуста. Добавьте несколько товаров в корзину, нажав
+            кнопку ‘В корзину‘
+          </p>
+          <Button variant="outline-light" onClick={() => navigate(SHOP_ROUTE)}>
+            Перейти в магазин
+          </Button>
+        </>
       ) : (
         <>
           <Table

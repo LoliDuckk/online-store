@@ -25,7 +25,14 @@ const CreateBrand = ({ show, onHide }) => {
     });
   };
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal
+      style={{ color: "white" }}
+      data-bs-theme="dark"
+      show={show}
+      onHide={onHide}
+      size="lg"
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Добавить бренд

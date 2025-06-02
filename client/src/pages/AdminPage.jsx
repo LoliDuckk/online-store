@@ -24,21 +24,21 @@ export default function AdminPage() {
   return (
     <Container className="d-flex flex-column">
       <Button
-        variant={"outline-dark"}
+        variant={"outline-light"}
         className={"mt-2"}
         onClick={() => setTypeVisible(true)}
       >
         Добавить тип
       </Button>
       <Button
-        variant={"outline-dark"}
+        variant={"outline-light"}
         className={"mt-2"}
         onClick={() => setBrandVisible(true)}
       >
         Добавить бренд
       </Button>
       <Button
-        variant={"outline-dark"}
+        variant={"outline-light"}
         className={"mt-2"}
         onClick={() => setDeviceVisible(true)}
       >

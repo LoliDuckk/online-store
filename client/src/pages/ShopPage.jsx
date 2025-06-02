@@ -1,5 +1,4 @@
 import { Col, Container, Row } from "react-bootstrap";
-import TypeBar from "../components/TypeBar";
 import BrandBar from "../components/BrandBar";
 import DeviceList from "../components/DeviceList";
 import { observer } from "mobx-react-lite";
@@ -29,11 +28,8 @@ const ShopPage = observer(() => {
   }, [device.page, device.selectedType, device.selectedBrand]);
 
   return (
-    <Container className="mt-2">
+    <Container data-bs-theme="dark" className="mt-2">
       <Row>
-        <Col md={3}>
-          <TypeBar />
-        </Col>
         <Col md={9}>
           <BrandBar />
           <DeviceList />

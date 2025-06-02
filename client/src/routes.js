@@ -15,7 +15,9 @@ import {
   SHOP_ROUTE,
   HOME_ROUTE,
   PROFILE_ROUTE,
+  CATEGORY_ROUTE,
 } from "./utils/consts";
+import CategorySelector from "./pages/CategorySelector";
 
 export const authRoutes = [
   {
@@ -33,6 +35,10 @@ export const authRoutes = [
 ];
 
 export const publicRoutes = [
+  {
+    path: CATEGORY_ROUTE,
+    Component: CategorySelector,
+  },
   {
     path: SHOP_ROUTE,
     Component: ShopPage,
