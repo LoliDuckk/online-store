@@ -1,9 +1,9 @@
-// src/components/Pages.jsx
 import { Pagination } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { Context } from "../main";
 import { useNavigate, useLocation } from "react-router-dom";
+import { SHOP_ROUTE } from "../utils/consts";
 
 const Pages = observer(() => {
   const { device } = useContext(Context);
@@ -20,7 +20,7 @@ const Pages = observer(() => {
     const params = new URLSearchParams(location.search);
     params.set("page", page);
     navigate({
-      pathname: "/shop",
+      pathname: SHOP_ROUTE,
       search: params.toString(),
     });
   };

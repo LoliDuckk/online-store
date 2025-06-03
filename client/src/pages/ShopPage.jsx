@@ -14,17 +14,14 @@ const ShopPage = observer(() => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1) Один раз загрузили возможные типы и бренды (чтобы потом можно было спрятать лоадер, посмотреть имена и т.п.)
   useEffect(() => {
     fetchTypes().then((data) => device.setTypes(data));
     fetchBrands().then((data) => device.setBrands(data));
   }, []);
 
-  // 2) Следим за изменением query-params (location.search)
   useEffect(() => {
-    // Считываем параметры из URL
     const params = new URLSearchParams(location.search);
-    // parseInt or default to null
+
     const typeId = params.get("typeId") ? Number(params.get("typeId")) : null;
     const brandId = params.get("brandId")
       ? Number(params.get("brandId"))
@@ -34,12 +31,10 @@ const ShopPage = observer(() => {
       ? Number(params.get("limit"))
       : device.limit;
 
-    // Чтобы в store была ссылка на текущую страницу:
     device.setPage(page);
     device.setSelectedType(typeId ? { id: typeId } : {});
     device.setSelectedBrand(brandId ? { id: brandId } : {});
 
-    // Фетчим устройства под эти параметры
     fetchDevices(typeId, brandId, page, limit).then((data) => {
       device.setDevices(data.rows);
       device.setTotalCount(data.count);
@@ -49,8 +44,10 @@ const ShopPage = observer(() => {
   return (
     <Container data-bs-theme="dark" className="mt-2">
       <Row>
-        <Col md={9}>
+        <Col md="auto">
           <BrandBar />
+        </Col>
+        <Col>
           <DeviceList />
           <Pages />
         </Col>

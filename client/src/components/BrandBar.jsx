@@ -14,13 +14,8 @@ const BrandBar = observer(() => {
   const handleBrandClick = (brand) => {
     const params = new URLSearchParams(location.search);
 
-    // Установим brandId, сбросим страницу
     params.set("brandId", brand.id);
     params.set("page", 1);
-
-    // Если нужно сбросить категорию при выборе бренда:
-    // params.delete("typeId");
-
     navigate({
       pathname: SHOP_ROUTE,
       search: params.toString(),
@@ -38,7 +33,7 @@ const BrandBar = observer(() => {
                 ? "primary"
                 : "outline-secondary"
             }
-            className="me-2"
+            className="mb-2"
             onClick={() => handleBrandClick(brand)}
           >
             {brand.name}
