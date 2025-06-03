@@ -11,6 +11,12 @@ class CategoryController {
     const category = await Category.create({ name });
     return res.json(category);
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    await Category.destroy({ where: { id } });
+    return res.json({ message: "Категория удалена" });
+  }
 }
 
 module.exports = new CategoryController();

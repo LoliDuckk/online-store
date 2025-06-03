@@ -41,6 +41,7 @@ export default function DeviceItem({ device }) {
           width={200}
           height={200}
           className="mb-3"
+          style={{ objectFit: "cover" }}
         />
 
         <div

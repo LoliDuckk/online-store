@@ -5,7 +5,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   HOME_ROUTE,
   LOGIN_ROUTE,
-  SHOP_ROUTE,
   PROFILE_ROUTE,
   BASKET_ROUTE,
   ADMIN_ROUTE,
@@ -50,9 +49,14 @@ const NavBar = observer(() => {
             <Image src={logoIcon} height={50} style={{ marginRight: "10px" }} />
             <span>Techno</span>
           </NavLink>
-          <NavLink style={{ color: "white" }} to={CATEGORY_ROUTE}>
-            Catalog
+          <NavLink
+            className="fs-1 text-decoration-none "
+            style={{ color: "white" }}
+            to={CATEGORY_ROUTE}
+          >
+            Каталог
           </NavLink>
+          {/* ПОИСК */}
           {user.isAuth ? (
             <div className="d-flex align-items-end">
               {user.isAdmin ? (

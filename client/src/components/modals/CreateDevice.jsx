@@ -79,7 +79,7 @@ const CreateDevice = observer(({ show, onHide }) => {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Добавить тип
+          Добавить устройство
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -137,7 +137,7 @@ const CreateDevice = observer(({ show, onHide }) => {
           {errors.name && (
             <Form.Text className="text-danger">{errors.file}</Form.Text>
           )}
-          <Button className="mt-3" variant="outline-dark" onClick={addInfo}>
+          <Button className="mt-3" variant="outline-light" onClick={addInfo}>
             Добавить новое свойство
           </Button>
           {info.map((i) => (

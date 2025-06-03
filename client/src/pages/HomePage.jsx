@@ -1,11 +1,12 @@
 import { Carousel, Container, Image } from "react-bootstrap";
 import test from "../assets/1320by500.jpg";
+import img1 from "../assets/bg.png";
 import { useNavigate } from "react-router-dom";
 import { SHOP_ROUTE } from "../utils/consts";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const slides = [test, test, test];
+  const slides = [img1, img1, test];
 
   return (
     <Container className="mt-2">

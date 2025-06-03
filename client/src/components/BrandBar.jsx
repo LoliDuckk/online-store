@@ -1,4 +1,3 @@
-// src/components/BrandBar.jsx
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { Context } from "../main";

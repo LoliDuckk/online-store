@@ -3,6 +3,7 @@ import CreateType from "../components/modals/CreateType";
 import CreateCategory from "../components/modals/CreateCategory";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
+import DeleteModal from "../components/modals/DeleteModal";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../main";
@@ -14,6 +15,7 @@ export default function AdminPage() {
   const [categoryVisible, setCategoryVisible] = useState(false);
   const [brandVisible, setBrandVisible] = useState(false);
   const [deviceVisible, setDeviceVisible] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   useEffect(() => {
     try {
@@ -28,17 +30,18 @@ export default function AdminPage() {
       <Button
         variant={"outline-light"}
         className={"mt-2"}
-        onClick={() => setTypeVisible(true)}
-      >
-        Добавить тип
-      </Button>
-      <Button
-        variant={"outline-light"}
-        className={"mt-2"}
         onClick={() => setCategoryVisible(true)}
       >
         Добавить категорию
       </Button>
+      <Button
+        variant={"outline-light"}
+        className={"mt-2"}
+        onClick={() => setTypeVisible(true)}
+      >
+        Добавить тип
+      </Button>
+
       <Button
         variant={"outline-light"}
         className={"mt-2"}
@@ -53,6 +56,14 @@ export default function AdminPage() {
       >
         Добавить устройство
       </Button>
+      <Button
+        variant="danger"
+        className="mt-2"
+        onClick={() => setDeleteModalVisible(true)}
+      >
+        Удалить категорию / тип / бренд / устройство
+      </Button>
+
       <CreateType show={typeVisible} onHide={() => setTypeVisible(false)} />
       <CreateCategory
         show={categoryVisible}
@@ -62,6 +73,10 @@ export default function AdminPage() {
       <CreateDevice
         show={deviceVisible}
         onHide={() => setDeviceVisible(false)}
+      />
+      <DeleteModal
+        show={deleteModalVisible}
+        onHide={() => setDeleteModalVisible(false)}
       />
     </Container>
   );
