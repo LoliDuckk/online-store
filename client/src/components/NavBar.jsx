@@ -1,6 +1,13 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
-import { Button, Container, Dropdown, Image, Navbar } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  Dropdown,
+  Image,
+  Navbar,
+  Form,
+} from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   HOME_ROUTE,
@@ -9,17 +16,20 @@ import {
   BASKET_ROUTE,
   ADMIN_ROUTE,
   CATEGORY_ROUTE,
+  SHOP_ROUTE,
 } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import logoIcon from "../assets/logo.svg";
 import profileIcon from "../assets/user2.svg";
 import basketIcon from "../assets/basket.svg";
 import cmsIcon from "../assets/cms.svg";
+import searchIcon from "../assets/search.svg";
 import { getBasket } from "../http/basketApi";
 
 const NavBar = observer(() => {
   const { user, basket } = useContext(Context);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const logOut = () => {
     user.setUser({});
@@ -49,14 +59,60 @@ const NavBar = observer(() => {
             <Image src={logoIcon} height={50} style={{ marginRight: "10px" }} />
             <span>Techno</span>
           </NavLink>
-          <NavLink
-            className="fs-1 text-decoration-none "
-            style={{ color: "white" }}
-            to={CATEGORY_ROUTE}
+          <Form
+            className="d-flex align-items-center mx-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchTerm.trim()) {
+                navigate(
+                  `${SHOP_ROUTE}?query=${encodeURIComponent(searchTerm)}`
+                );
+                setSearchTerm("");
+              }
+            }}
+            style={{ maxWidth: "500px", width: "100%" }}
           >
-            Каталог
-          </NavLink>
-          {/* ПОИСК */}
+            <Form.Control
+              type="search"
+              placeholder="Поиск..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="rounded-start"
+              style={{
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+                border: "1px solid #ccc",
+                height: "38px",
+              }}
+            />
+            <Button
+              type="submit"
+              className="d-flex align-items-center justify-content-center rounded-end"
+              style={{
+                backgroundColor: "#f0c000",
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                border: "1px solid #ccc",
+                height: "38px",
+                padding: "0 12px",
+              }}
+            >
+              <Image src={searchIcon} height={20} />
+            </Button>
+          </Form>
+          <Button
+            style={{
+              position: "relative",
+              marginRight: "10px",
+              background: "none",
+              border: "none",
+            }}
+            onClick={() => navigate(CATEGORY_ROUTE)}
+          >
+            <Image src={cmsIcon} height={30} />
+            <br />
+            <span className="fs-5">Каталог</span>
+          </Button>
           {user.isAuth ? (
             <div className="d-flex align-items-end">
               {user.isAdmin ? (

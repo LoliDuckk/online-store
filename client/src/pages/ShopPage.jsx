@@ -6,12 +6,10 @@ import { useContext, useEffect } from "react";
 import { Context } from "../main";
 import { fetchBrands, fetchDevices, fetchTypes } from "../http/deviceApi";
 import Pages from "../components/Pages";
-
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ShopPage = observer(() => {
   const { device } = useContext(Context);
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -30,14 +28,21 @@ const ShopPage = observer(() => {
     const limit = params.get("limit")
       ? Number(params.get("limit"))
       : device.limit;
+    const query = params.get("query")?.toLowerCase() || "";
 
     device.setPage(page);
     device.setSelectedType(typeId ? { id: typeId } : {});
     device.setSelectedBrand(brandId ? { id: brandId } : {});
 
     fetchDevices(typeId, brandId, page, limit).then((data) => {
-      device.setDevices(data.rows);
-      device.setTotalCount(data.count);
+      const filteredDevices = query
+        ? data.rows.filter((device) =>
+            device.name.toLowerCase().includes(query)
+          )
+        : data.rows;
+
+      device.setDevices(filteredDevices);
+      device.setTotalCount(filteredDevices.length);
     });
   }, [location.search]);
 
