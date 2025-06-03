@@ -2,9 +2,9 @@ import { Button, Card, Container, Form } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   ADMIN_ROUTE,
+  HOME_ROUTE,
   LOGIN_ROUTE,
   REGISTRATION_ROUTE,
-  SHOP_ROUTE,
 } from "../utils/consts";
 import { auth, registration } from "../http/userApi";
 import { useContext, useState } from "react";
@@ -56,7 +56,7 @@ const AuthPage = observer(() => {
         user.setIsAdmin(true);
         navigate(ADMIN_ROUTE);
       }
-      navigate(SHOP_ROUTE);
+      navigate(HOME_ROUTE);
     } catch (e) {
       setServerError(e?.response?.data?.message || "Ошибка сервера");
     }

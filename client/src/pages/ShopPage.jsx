@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import BrandBar from "../components/BrandBar";
+import FilterBar from "../components/FilterBar";
 import DeviceList from "../components/DeviceList";
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect } from "react";
@@ -30,16 +30,46 @@ const ShopPage = observer(() => {
       : device.limit;
     const query = params.get("query")?.toLowerCase() || "";
 
+    const priceFromParam = params.get("priceFrom");
+    const priceToParam = params.get("priceTo");
+    const priceFrom = priceFromParam ? Number(priceFromParam) : null;
+    const priceTo = priceToParam ? Number(priceToParam) : null;
+
+    const sort = params.get("sort");
+
     device.setPage(page);
     device.setSelectedType(typeId ? { id: typeId } : {});
     device.setSelectedBrand(brandId ? { id: brandId } : {});
 
     fetchDevices(typeId, brandId, page, limit).then((data) => {
-      const filteredDevices = query
-        ? data.rows.filter((device) =>
-            device.name.toLowerCase().includes(query)
-          )
-        : data.rows;
+      let filteredDevices = data.rows;
+
+      if (query) {
+        filteredDevices = filteredDevices.filter((device) =>
+          device.name.toLowerCase().includes(query)
+        );
+      }
+
+      if (priceFrom !== null) {
+        filteredDevices = filteredDevices.filter(
+          (device) => device.price >= priceFrom
+        );
+      }
+      if (priceTo !== null) {
+        filteredDevices = filteredDevices.filter(
+          (device) => device.price <= priceTo
+        );
+      }
+
+      if (sort === "price_asc") {
+        filteredDevices.sort((a, b) => a.price - b.price);
+      } else if (sort === "price_desc") {
+        filteredDevices.sort((a, b) => b.price - a.price);
+      } else if (sort === "name_asc") {
+        filteredDevices.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sort === "name_desc") {
+        filteredDevices.sort((a, b) => b.name.localeCompare(a.name));
+      }
 
       device.setDevices(filteredDevices);
       device.setTotalCount(filteredDevices.length);
@@ -50,7 +80,7 @@ const ShopPage = observer(() => {
     <Container data-bs-theme="dark" className="mt-2">
       <Row>
         <Col md="auto">
-          <BrandBar />
+          <FilterBar />
         </Col>
         <Col>
           <DeviceList />
