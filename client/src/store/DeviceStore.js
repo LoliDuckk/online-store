@@ -5,8 +5,10 @@ export default class DeviceStore {
     this._types = [];
     this._brands = [];
     this._devices = [];
+    this._categories = [];
     this._selectedType = {};
     this._selectedBrand = {};
+    this._selectedCategory = null;
     this._page = 1;
     this._totalCount = 0;
     this._limit = 16;
@@ -21,6 +23,9 @@ export default class DeviceStore {
   }
   setDevices(devices) {
     this._devices = devices;
+  }
+  setCategories(categories) {
+    this._categories = categories;
   }
   setPage(page) {
     this._page = page;
@@ -46,6 +51,9 @@ export default class DeviceStore {
   }
   get devices() {
     return this._devices;
+  }
+  get categories() {
+    return this._categories;
   }
   get selectedType() {
     return this._selectedType;

@@ -1,5 +1,6 @@
 import { Button, Container } from "react-bootstrap";
 import CreateType from "../components/modals/CreateType";
+import CreateCategory from "../components/modals/CreateCategory";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
 import { useContext, useEffect, useState } from "react";
@@ -10,6 +11,7 @@ export default function AdminPage() {
   const { user } = useContext(Context);
   const navigate = useNavigate();
   const [typeVisible, setTypeVisible] = useState(false);
+  const [categoryVisible, setCategoryVisible] = useState(false);
   const [brandVisible, setBrandVisible] = useState(false);
   const [deviceVisible, setDeviceVisible] = useState(false);
 
@@ -33,6 +35,13 @@ export default function AdminPage() {
       <Button
         variant={"outline-light"}
         className={"mt-2"}
+        onClick={() => setCategoryVisible(true)}
+      >
+        Добавить категорию
+      </Button>
+      <Button
+        variant={"outline-light"}
+        className={"mt-2"}
         onClick={() => setBrandVisible(true)}
       >
         Добавить бренд
@@ -45,6 +54,10 @@ export default function AdminPage() {
         Добавить устройство
       </Button>
       <CreateType show={typeVisible} onHide={() => setTypeVisible(false)} />
+      <CreateCategory
+        show={categoryVisible}
+        onHide={() => setCategoryVisible(false)}
+      />
       <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)} />
       <CreateDevice
         show={deviceVisible}

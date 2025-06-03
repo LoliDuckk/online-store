@@ -12,7 +12,7 @@ const validateEmail = (e) => {
 };
 
 const validateFile = (e, i) => {
-  return e !== null ? "" : "Выберите файл";
+  return e !== null ? "" : "Файл не выбран";
 };
 
 export { validateLength, validateEmpty, validateEmail, validateFile };
