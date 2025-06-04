@@ -6,6 +6,7 @@ import DevicePage from "./pages/DevicePage";
 import ShopPage from "./pages/ShopPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
+import OrderPage from "./pages/OrderPage";
 import {
   ADMIN_ROUTE,
   BASKET_ROUTE,
@@ -16,8 +17,11 @@ import {
   HOME_ROUTE,
   PROFILE_ROUTE,
   CATEGORY_ROUTE,
+  ORDER_ROUTE,
+  HISTORY_ROUTE,
 } from "./utils/consts";
 import CategorySelector from "./pages/CategorySelector";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
 
 export const authRoutes = [
   {
@@ -31,6 +35,14 @@ export const authRoutes = [
   {
     path: PROFILE_ROUTE,
     Component: ProfilePage,
+  },
+  {
+    path: ORDER_ROUTE,
+    Component: OrderPage,
+  },
+  {
+    path: HISTORY_ROUTE,
+    Component: OrderHistoryPage,
   },
 ];
 

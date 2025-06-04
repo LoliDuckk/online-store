@@ -109,7 +109,12 @@ const BasketPage = observer(() => {
 
           <div className="text-end mt-4">
             <h4 className="fw-bold fs-3">Итого: {basket.totalPrice} ₽</h4>
-            <Button variant="success" size="lg" className="fw-bold mt-2">
+            <Button
+              variant="success"
+              size="lg"
+              className="fw-bold mt-2"
+              onClick={() => navigate("/order")}
+            >
               Оформить заказ
             </Button>
           </div>

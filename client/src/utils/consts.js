@@ -7,3 +7,5 @@ export const BASKET_ROUTE = "/basket";
 export const DEVICE_ROUTE = "/device";
 export const PROFILE_ROUTE = "/profile";
 export const CATEGORY_ROUTE = "/category";
+export const ORDER_ROUTE = "/order";
+export const HISTORY_ROUTE = "/orders";

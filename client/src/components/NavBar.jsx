@@ -17,6 +17,7 @@ import {
   ADMIN_ROUTE,
   CATEGORY_ROUTE,
   SHOP_ROUTE,
+  HISTORY_ROUTE,
 } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import logoIcon from "../assets/logo.svg";
@@ -185,7 +186,7 @@ const NavBar = observer(() => {
                   <Dropdown.Item
                     className="fs-5"
                     as="button"
-                    onClick={() => navigate(PROFILE_ROUTE)}
+                    onClick={() => navigate(HISTORY_ROUTE)}
                   >
                     История заказов
                   </Dropdown.Item>
