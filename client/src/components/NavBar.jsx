@@ -101,21 +101,22 @@ const NavBar = observer(() => {
               <Image src={searchIcon} height={20} />
             </Button>
           </Form>
-          <Button
-            style={{
-              position: "relative",
-              marginRight: "10px",
-              background: "none",
-              border: "none",
-            }}
-            onClick={() => navigate(CATEGORY_ROUTE)}
-          >
-            <Image src={catalogIcon} height={30} />
-            <br />
-            <span className="fs-5">Каталог</span>
-          </Button>
+
           {user.isAuth ? (
             <div className="d-flex align-items-end">
+              <Button
+                style={{
+                  position: "relative",
+                  marginRight: "10px",
+                  background: "none",
+                  border: "none",
+                }}
+                onClick={() => navigate(CATEGORY_ROUTE)}
+              >
+                <Image src={catalogIcon} height={30} />
+                <br />
+                <span className="fs-5">Каталог</span>
+              </Button>
               {user.isAdmin ? (
                 <Button
                   style={{

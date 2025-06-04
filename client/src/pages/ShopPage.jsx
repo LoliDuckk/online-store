@@ -20,59 +20,31 @@ const ShopPage = observer(() => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
-    const typeId = params.get("typeId") ? Number(params.get("typeId")) : null;
-    const brandId = params.get("brandId")
-      ? Number(params.get("brandId"))
-      : null;
-    const page = params.get("page") ? Number(params.get("page")) : 1;
-    const limit = params.get("limit")
-      ? Number(params.get("limit"))
-      : device.limit;
-    const query = params.get("query")?.toLowerCase() || "";
-
-    const priceFromParam = params.get("priceFrom");
-    const priceToParam = params.get("priceTo");
-    const priceFrom = priceFromParam ? Number(priceFromParam) : null;
-    const priceTo = priceToParam ? Number(priceToParam) : null;
-
-    const sort = params.get("sort");
+    const typeId = params.get("typeId") || null;
+    const brandId = params.get("brandId") || null;
+    const page = Number(params.get("page")) || 1;
+    const limit = Number(params.get("limit")) || device.limit;
+    const priceFrom = params.get("priceFrom") || null;
+    const priceTo = params.get("priceTo") || null;
+    const sort = params.get("sort") || null;
+    const query = params.get("query") || null;
 
     device.setPage(page);
-    device.setSelectedType(typeId ? { id: typeId } : {});
-    device.setSelectedBrand(brandId ? { id: brandId } : {});
+    device.setSelectedType(typeId ? { id: Number(typeId) } : {});
+    device.setSelectedBrand(brandId ? { id: Number(brandId) } : {});
 
-    fetchDevices(typeId, brandId, page, limit).then((data) => {
-      let filteredDevices = data.rows;
-
-      if (query) {
-        filteredDevices = filteredDevices.filter((device) =>
-          device.name.toLowerCase().includes(query)
-        );
-      }
-
-      if (priceFrom !== null) {
-        filteredDevices = filteredDevices.filter(
-          (device) => device.price >= priceFrom
-        );
-      }
-      if (priceTo !== null) {
-        filteredDevices = filteredDevices.filter(
-          (device) => device.price <= priceTo
-        );
-      }
-
-      if (sort === "price_asc") {
-        filteredDevices.sort((a, b) => a.price - b.price);
-      } else if (sort === "price_desc") {
-        filteredDevices.sort((a, b) => b.price - a.price);
-      } else if (sort === "name_asc") {
-        filteredDevices.sort((a, b) => a.name.localeCompare(b.name));
-      } else if (sort === "name_desc") {
-        filteredDevices.sort((a, b) => b.name.localeCompare(a.name));
-      }
-
-      device.setDevices(filteredDevices);
-      device.setTotalCount(filteredDevices.length);
+    fetchDevices(
+      typeId,
+      brandId,
+      page,
+      limit,
+      priceFrom,
+      priceTo,
+      sort,
+      query
+    ).then((data) => {
+      device.setDevices(data.rows);
+      device.setTotalCount(data.count);
     });
   }, [location.search]);
 

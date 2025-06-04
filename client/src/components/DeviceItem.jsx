@@ -63,12 +63,7 @@ export default function DeviceItem({ device }) {
 
         <div className="d-flex justify-content-between align-items-center w-100 mt-auto">
           <div className="fw-bold">{device.price} ₽</div>
-          <Button
-            variant="outline-dark"
-            style={{ backgroundColor: "#f0c000", border: "none" }}
-            size="sm"
-            onClick={handleAddToBasket}
-          >
+          <Button variant="warning" size="sm" onClick={handleAddToBasket}>
             В корзину
           </Button>
         </div>
