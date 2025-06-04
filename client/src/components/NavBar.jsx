@@ -24,6 +24,7 @@ import profileIcon from "../assets/user2.svg";
 import basketIcon from "../assets/basket.svg";
 import cmsIcon from "../assets/cms.svg";
 import searchIcon from "../assets/search.svg";
+import catalogIcon from "../assets/archive.svg";
 import { getBasket } from "../http/basketApi";
 
 const NavBar = observer(() => {
@@ -81,7 +82,7 @@ const NavBar = observer(() => {
               style={{
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0,
-                border: "1px solid #ccc",
+                border: "1px solid black",
                 height: "38px",
               }}
             />
@@ -92,7 +93,7 @@ const NavBar = observer(() => {
                 backgroundColor: "#f0c000",
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
-                border: "1px solid #ccc",
+                border: "1px solid black",
                 height: "38px",
                 padding: "0 12px",
               }}
@@ -109,7 +110,7 @@ const NavBar = observer(() => {
             }}
             onClick={() => navigate(CATEGORY_ROUTE)}
           >
-            <Image src={cmsIcon} height={30} />
+            <Image src={catalogIcon} height={30} />
             <br />
             <span className="fs-5">Каталог</span>
           </Button>

@@ -32,6 +32,7 @@ export default function DeviceItem({ device }) {
           width: 270,
           height: 340,
           transition: "box-shadow 0.3s ease",
+          backgroundColor: "#303030",
         }}
         onClick={handleNavigate}
       >
@@ -47,7 +48,7 @@ export default function DeviceItem({ device }) {
         <div
           className="text-center mb-2"
           style={{
-            fontSize: "0.9rem",
+            fontSize: "1.1rem",
             lineHeight: "1.2rem",
             height: "2.4rem",
             overflow: "hidden",
@@ -62,7 +63,12 @@ export default function DeviceItem({ device }) {
 
         <div className="d-flex justify-content-between align-items-center w-100 mt-auto">
           <div className="fw-bold">{device.price} ₽</div>
-          <Button variant="outline-light" size="sm" onClick={handleAddToBasket}>
+          <Button
+            variant="outline-dark"
+            style={{ backgroundColor: "#f0c000", border: "none" }}
+            size="sm"
+            onClick={handleAddToBasket}
+          >
             В корзину
           </Button>
         </div>

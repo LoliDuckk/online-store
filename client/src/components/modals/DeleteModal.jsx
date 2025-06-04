@@ -29,20 +29,20 @@ const entityMap = {
   },
   device: {
     label: "Устройство",
-    fetch: () => fetchDevices(null, null, 1, 100), // получить до 100 устройств
+    fetch: () => fetchDevices(null, null, 1, 100),
     delete: deleteDevice,
   },
 };
 
 export default function DeleteEntityModal({ show, onHide }) {
-  const [entityType, setEntityType] = useState(""); // category, type, brand, device
+  const [entityType, setEntityType] = useState("");
   const [entities, setEntities] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     if (show && entityType) {
       entityMap[entityType].fetch().then((data) => {
-        setEntities(data.rows || data); // fetchDevices возвращает { count, rows }
+        setEntities(data.rows || data);
         setSelectedId(null);
       });
     }

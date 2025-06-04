@@ -1,4 +1,3 @@
-// components/modals/CreateCategory.jsx
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { createCategory } from "../../http/deviceApi";
