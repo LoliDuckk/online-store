@@ -9,7 +9,6 @@ import {
   Row,
   Table,
 } from "react-bootstrap";
-import bigStar from "../assets/bigStar.png";
 import { fetchOneDevice } from "../http/deviceApi";
 import { addToBasket } from "../http/basketApi";
 import { Context } from "../main";
@@ -29,62 +28,71 @@ export default function DevicePage() {
   };
 
   return (
-    <Container className="mt-3">
-      <Row>
-        <Col md={4}>
+    <Container className="mt-4 text-light">
+      <Row className="mb-4">
+        <Col md={4} className="text-center">
           <Image
             width={300}
             height={300}
             src={import.meta.env.VITE_API_URL + device.img}
+            rounded
+            style={{ objectFit: "cover" }}
           />
         </Col>
-        <Col md={4}>
-          <div className="d-flex flex-column align-items-center">
-            <h2>{device.name}</h2>
-            <div
-              className="d-flex align-items-center justify-content-center"
-              style={{
-                background: `url(${bigStar}) no-repeat center center`,
-                width: 100,
-                height: 100,
-                backgroundSize: "cover",
-                fontSize: 32,
-              }}
-            >
-              {device.rating}
-            </div>
-          </div>
+
+        <Col
+          md={4}
+          className="d-flex flex-column align-items-center justify-content-center"
+        >
+          <h2 className="text-center">{device.name}</h2>
         </Col>
-        <Col md={4}>
+
+        <Col
+          md={4}
+          className="d-flex align-items-center justify-content-center"
+        >
           <Card
-            className="d-flex flex-column align-items-center justify-content-around"
+            data-bs-theme="dark"
+            className="text-center p-4 shadow"
             style={{
-              width: 300,
-              height: 300,
-              fontSize: 32,
-              border: "5px solid lightgray",
+              width: "100%",
+              maxWidth: 320,
+              borderRadius: 12,
+              backgroundColor: "#1e1e1e",
+              border: "1px solid #444",
+              color: "white",
             }}
           >
-            <h3>{device.price} &#8381;</h3>
-            <Button variant={"outline-dark"} onClick={handleAddToBasket}>
+            <h3 className="mb-4">{device.price} &#8381;</h3>
+            <Button
+              variant="warning"
+              size="lg"
+              onClick={handleAddToBasket}
+              style={{
+                fontWeight: "bold",
+                padding: "10px 24px",
+              }}
+            >
               В корзину
             </Button>
           </Card>
         </Col>
       </Row>
-      <h3>Характеристики</h3>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Название</th>
-            <th>Описание</th>
-          </tr>
-        </thead>
+
+      <h4 className="mb-3">Характеристики</h4>
+      <Table bordered hover variant="dark" responsive>
         <tbody>
-          {device.info.map((info) => (
-            <tr key={info.id}>
-              <td>{info.title}</td>
-              <td>{info.description}</td>
+          {device.info.map((info, index) => (
+            <tr
+              key={info.id}
+              style={{
+                backgroundColor: index % 2 === 0 ? "#2a2a2a" : "#1f1f1f",
+              }}
+            >
+              <td style={{ width: "30%", fontWeight: "500", color: "#f8f9fa" }}>
+                {info.title}
+              </td>
+              <td style={{ color: "#e0e0e0" }}>{info.description}</td>
             </tr>
           ))}
         </tbody>
