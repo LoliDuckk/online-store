@@ -12,14 +12,16 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { createOrder } from "../http/orderApi";
-import { SHOP_ROUTE } from "../utils/consts";
 import { useNavigate } from "react-router-dom";
 import CreateAddress from "../components/modals/CreateAddress";
+import CardPaymentModal from "../components/modals/CardPaymentModal";
+import { SHOP_ROUTE } from "../utils/consts";
 
 const OrderPage = observer(() => {
   const { basket, address } = useContext(Context);
   const navigate = useNavigate();
 
+  const [showCardModal, setShowCardModal] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState("courier");
   const [paymentMethod, setPaymentMethod] = useState("sbp");
 
@@ -61,12 +63,20 @@ const OrderPage = observer(() => {
 
   const total = subtotal + shippingCost;
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = () => {
     if (!address.selectedAddressId) {
       alert("Пожалуйста, выберите адрес доставки");
       return;
     }
 
+    if (paymentMethod === "card") {
+      setShowCardModal(true);
+    } else {
+      createOrderNow();
+    }
+  };
+
+  const createOrderNow = async () => {
     const orderData = {
       addressId: address.selectedAddressId,
       deliveryMethod,
@@ -222,17 +232,6 @@ const OrderPage = observer(() => {
                 <Col md={6}>
                   <Form.Check
                     type="radio"
-                    id="pay-sbp"
-                    label="СБП"
-                    name="paymentMethod"
-                    value="sbp"
-                    checked={paymentMethod === "sbp"}
-                    onChange={() => setPaymentMethod("sbp")}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Form.Check
-                    type="radio"
                     id="pay-cash"
                     label="Наличными"
                     name="paymentMethod"
@@ -241,12 +240,10 @@ const OrderPage = observer(() => {
                     onChange={() => setPaymentMethod("cash")}
                   />
                 </Col>
-              </Row>
-              <Row className="mt-2">
                 <Col md={6}>
                   <Form.Check
                     type="radio"
-                    id="pay-visa-russia"
+                    id="pay-card"
                     label="Картой (Visa, Mastercard)"
                     name="paymentMethod"
                     value="card"
@@ -330,6 +327,14 @@ const OrderPage = observer(() => {
         show={showAddressModal}
         onHide={closeAddressModal}
         editingAddress={editingAddress}
+      />
+      <CardPaymentModal
+        show={showCardModal}
+        onHide={() => setShowCardModal(false)}
+        onSuccess={async () => {
+          setShowCardModal(false);
+          await createOrderNow();
+        }}
       />
     </Container>
   );

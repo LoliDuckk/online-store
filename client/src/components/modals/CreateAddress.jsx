@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../../main";
 import { Button, Form, Modal } from "react-bootstrap";
+import { validateEmpty, validateFullName } from "../../utils/validate"; // путь подстрой под проект
 
 const CreateAddress = ({ show, onHide, editingAddress }) => {
   const { address } = useContext(Context);
@@ -15,6 +16,8 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
     apartment: "",
     isDefault: false,
   });
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (editingAddress) {
@@ -42,30 +45,92 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
         isDefault: false,
       });
     }
+    setErrors({});
   }, [editingAddress, show]);
+
+  const formatPhone = (value) => {
+    const digits = value.replace(/\D/g, "");
+    let result = "+7";
+
+    if (digits.length > 1) result += ` (${digits.slice(1, 4)}`;
+    if (digits.length >= 4) result += `) ${digits.slice(4, 7)}`;
+    if (digits.length >= 7) result += `-${digits.slice(7, 9)}`;
+    if (digits.length >= 9) result += `-${digits.slice(9, 11)}`;
+
+    return result.slice(0, 18);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = name === "phone" ? formatPhone(value) : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : newValue,
     }));
+
+    if (errors[name]) {
+      validateField(name, newValue);
+    }
+  };
+
+  const validateField = (name, value) => {
+    let error = "";
+
+    if (
+      [
+        "country",
+        "fullName",
+        "phone",
+        "city",
+        "postalCode",
+        "street",
+        "house",
+      ].includes(name)
+    ) {
+      error = validateEmpty(value);
+    }
+
+    if (name === "fullName" && !error) {
+      error = validateFullName(value);
+    }
+
+    if (name === "phone" && !error) {
+      const phonePattern = /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/;
+      if (!phonePattern.test(value)) {
+        error = "Введите номер в формате +7 (999) 999-99-99";
+      }
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+
+    return !error;
+  };
+
+  const validateForm = () => {
+    const fieldNames = [
+      "country",
+      "fullName",
+      "phone",
+      "city",
+      "postalCode",
+      "street",
+      "house",
+    ];
+
+    const valid = fieldNames.every((field) =>
+      validateField(field, formData[field])
+    );
+    return valid;
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const { country, fullName, phone, city, postalCode, street, house } =
-      formData;
-    if (
-      !country ||
-      !fullName ||
-      !phone ||
-      !city ||
-      !postalCode ||
-      !street ||
-      !house
-    ) {
-      alert("Пожалуйста, заполните все обязательные поля");
+
+    if (!validateForm()) {
       return;
     }
 
@@ -74,6 +139,7 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
     } else {
       await address.addAddress(formData);
     }
+
     onHide();
   };
 
@@ -86,89 +152,48 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
       </Modal.Header>
       <Modal.Body className="bg-dark text-white">
         <Form onSubmit={handleSave}>
-          <Form.Group className="mb-2">
-            <Form.Label>Страна *</Form.Label>
-            <Form.Control
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              placeholder="Например, Россия"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>ФИО получателя *</Form.Label>
-            <Form.Control
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Иванов Иван Иванович"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Телефон *</Form.Label>
-            <Form.Control
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+7 912 345-67-89"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Город *</Form.Label>
-            <Form.Control
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="Москва"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Почтовый индекс *</Form.Label>
-            <Form.Control
-              type="text"
-              name="postalCode"
-              value={formData.postalCode}
-              onChange={handleChange}
-              placeholder="101000"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Улица *</Form.Label>
-            <Form.Control
-              type="text"
-              name="street"
-              value={formData.street}
-              onChange={handleChange}
-              placeholder="ул. Пушкина"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Дом *</Form.Label>
-            <Form.Control
-              type="text"
-              name="house"
-              value={formData.house}
-              onChange={handleChange}
-              placeholder="д. 1"
-              required
-            />
-          </Form.Group>
+          {[
+            {
+              name: "country",
+              label: "Страна",
+              placeholder: "Например, Россия",
+            },
+            {
+              name: "fullName",
+              label: "ФИО получателя",
+              placeholder: "Иванов Иван Иванович",
+            },
+            {
+              name: "phone",
+              label: "Телефон",
+              placeholder: "+7 (999) 999-99-99",
+            },
+            { name: "city", label: "Город", placeholder: "Москва" },
+            {
+              name: "postalCode",
+              label: "Почтовый индекс",
+              placeholder: "101000",
+            },
+            { name: "street", label: "Улица", placeholder: "ул. Пушкина" },
+            { name: "house", label: "Дом", placeholder: "д. 1" },
+          ].map(({ name, label, placeholder }) => (
+            <Form.Group className="mb-2" key={name}>
+              <Form.Label>{label} *</Form.Label>
+              <Form.Control
+                type="text"
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                onBlur={(e) => validateField(name, e.target.value)}
+                placeholder={placeholder}
+                isInvalid={!!errors[name]}
+                maxLength={name === "phone" ? 18 : undefined}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors[name]}
+              </Form.Control.Feedback>
+            </Form.Group>
+          ))}
 
           <Form.Group className="mb-2">
             <Form.Label>Квартира</Form.Label>

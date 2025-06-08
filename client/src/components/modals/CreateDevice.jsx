@@ -70,7 +70,7 @@ const CreateDevice = observer(({ show, onHide }) => {
 
   return (
     <Modal
-      style={{ color: "white" }}
+      className="text-white"
       data-bs-theme="dark"
       show={show}
       onHide={onHide}

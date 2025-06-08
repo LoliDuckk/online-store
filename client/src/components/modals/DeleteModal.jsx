@@ -52,7 +52,7 @@ export default function DeleteEntityModal({ show, onHide }) {
     if (!entityType || !selectedId) return;
     if (
       window.confirm(
-        `Вы уверены, что хотите удалить выбранную ${entityMap[
+        `Вы уверены, что хотите удалить ${entityMap[
           entityType
         ].label.toLowerCase()}?`
       )

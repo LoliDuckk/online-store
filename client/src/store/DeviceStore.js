@@ -12,6 +12,7 @@ export default class DeviceStore {
     this._page = 1;
     this._totalCount = 0;
     this._limit = 16;
+    this._groupedTypesByCategory = [];
     makeAutoObservable(this);
   }
 
@@ -42,6 +43,9 @@ export default class DeviceStore {
     this.setPage(1);
     this._selectedBrand = brand;
   }
+  setGroupedTypes(data) {
+    this._groupedTypesByCategory = data;
+  }
 
   get types() {
     return this._types;
@@ -69,5 +73,8 @@ export default class DeviceStore {
   }
   get limit() {
     return this._limit;
+  }
+  get groupedTypesByCategory() {
+    return this._groupedTypesByCategory;
   }
 }

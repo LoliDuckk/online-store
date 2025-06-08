@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Context } from "../main";
-import { fetchTypes } from "../http/deviceApi";
+import { fetchGroupedTypes } from "../http/deviceApi";
 import { Container, Row, Col, Card, Image } from "react-bootstrap";
 import { SHOP_ROUTE } from "../utils/consts";
 
@@ -12,7 +12,7 @@ const CategorySelector = observer(() => {
   const location = useLocation();
 
   useEffect(() => {
-    fetchTypes().then((data) => device.setTypes(data));
+    fetchGroupedTypes().then((data) => device.setGroupedTypes(data));
   }, []);
 
   const handleClick = (type) => {
@@ -30,39 +30,51 @@ const CategorySelector = observer(() => {
   return (
     <Container data-bs-theme="dark" className="mt-4">
       <h2 className="text-white mb-4">Категории</h2>
-      <Row>
-        {device.types.map((type) => (
-          <Col key={type.id} xs={6} sm={4} md={3} lg={3} className="mb-4">
-            <Card className="category-card" onClick={() => handleClick(type)}>
-              <div
-                className="d-flex align-items-center justify-content-center"
-                style={{ width: "100%", height: "150px", overflow: "hidden" }}
-              >
-                <Image
-                  src={import.meta.env.VITE_API_URL + type.img}
-                  className="mt-3"
-                  style={{
-                    maxHeight: "100%",
-                    maxWidth: "100%",
-                    objectFit: "contain",
-                  }}
-                />
-              </div>
-              <Card.Body className="text-center">
-                <Card.Title>{type.name}</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {device.groupedTypesByCategory.map((category) => (
+        <div key={category.id}>
+          <h4 className="text-white mt-4 mb-3">{category.name}</h4>
+          <Row>
+            {category.types.map((type) => (
+              <Col key={type.id} xs={6} sm={4} md={3} lg={3} className="mb-4">
+                <Card
+                  className="category-card"
+                  onClick={() => handleClick(type)}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      width: "100%",
+                      height: "150px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Image
+                      src={import.meta.env.VITE_API_URL + type.img}
+                      className="mt-3"
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                  <Card.Body className="text-center">
+                    <Card.Title>{type.name}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      ))}
 
       <style>
         {`
-          .category-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-          }
-        `}
+        .category-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+      `}
       </style>
     </Container>
   );

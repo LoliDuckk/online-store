@@ -78,17 +78,17 @@ const OrderHistoryPage = observer(() => {
                       <tr key={id}>
                         <td style={{ width: "64px" }}>
                           <img
-                            src={import.meta.env.VITE_API_URL + device.img}
-                            alt={device.name}
+                            src={import.meta.env.VITE_API_URL + device?.img}
+                            alt={device?.name}
                             width={64}
                             height={64}
                             style={{ objectFit: "cover" }}
                           />
                         </td>
-                        <td className="fw-semibold">{device.name}</td>
+                        <td className="fw-semibold">{device?.name}</td>
                         <td>{quantity}</td>
-                        <td>{device.price} ₽</td>
-                        <td>{device.price * quantity} ₽</td>
+                        <td>{device?.price} ₽</td>
+                        <td>{device?.price * quantity} ₽</td>
                       </tr>
                     ))}
                   </tbody>

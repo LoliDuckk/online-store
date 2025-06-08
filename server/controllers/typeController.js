@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
-const { Type } = require("../models/models");
+const { Type, Category } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class TypeController {
@@ -26,6 +26,15 @@ class TypeController {
   async getAll(req, res) {
     const types = await Type.findAll();
     return res.json(types);
+  }
+
+  async getGrouped(req, res) {
+    const categories = await Category.findAll({
+      include: [{ model: Type }],
+      order: [["id", "ASC"]],
+    });
+
+    res.json(categories);
   }
 
   async delete(req, res) {
