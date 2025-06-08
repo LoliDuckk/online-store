@@ -1,146 +1,111 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "../../main";
 import { Button, Form, Modal } from "react-bootstrap";
-import { validateEmpty, validateFullName } from "../../utils/validate"; // путь подстрой под проект
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const phoneRegex = /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/;
+
+const addressSchema = Yup.object().shape({
+  country: Yup.string()
+    .matches(/^[A-Za-zА-Яа-яЁё\s\-]+$/, "Страна не должна содержать цифры")
+    .required("Обязательное поле"),
+
+  fullName: Yup.string()
+    .matches(
+      /^[A-ZА-ЯЁ][A-ZА-ЯЁ]+\s[A-ZА-ЯЁ]+$/i,
+      "Введите имя и фамилию через пробел"
+    )
+    .required("Обязательное поле"),
+
+  phone: Yup.string()
+    .matches(
+      /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/,
+      "Введите номер в формате +7 (999) 999-99-99"
+    )
+    .required("Обязательное поле"),
+
+  city: Yup.string()
+    .matches(/^[A-Za-zА-Яа-яЁё\s\-]+$/, "Город не должен содержать цифры")
+    .required("Обязательное поле"),
+
+  postalCode: Yup.string()
+    .matches(/^\d{6}$/, "Почтовый индекс должен содержать 6 цифр")
+    .required("Обязательное поле"),
+
+  street: Yup.string()
+    .matches(/^[A-Za-zА-Яа-яЁё\s\.\-]+$/, "Улица не должна содержать цифры")
+    .required("Обязательное поле"),
+
+  house: Yup.string()
+    .matches(/^\d+$/, "Дом должен содержать число")
+    .required("Обязательное поле"),
+
+  apartment: Yup.string()
+    .matches(/^\d*$/, "Квартира должна содержать число")
+    .nullable(),
+
+  isDefault: Yup.boolean(),
+});
+
+const formatPhone = (value) => {
+  const digits = value.replace(/\D/g, "");
+  let result = "+7";
+
+  if (digits.length > 1) result += ` (${digits.slice(1, 4)}`;
+  if (digits.length >= 4) result += `) ${digits.slice(4, 7)}`;
+  if (digits.length >= 7) result += `-${digits.slice(7, 9)}`;
+  if (digits.length >= 9) result += `-${digits.slice(9, 11)}`;
+
+  return result.slice(0, 18);
+};
 
 const CreateAddress = ({ show, onHide, editingAddress }) => {
   const { address } = useContext(Context);
-  const [formData, setFormData] = useState({
-    country: "",
-    fullName: "",
-    phone: "",
-    city: "",
-    postalCode: "",
-    street: "",
-    house: "",
-    apartment: "",
-    isDefault: false,
-  });
 
-  const [errors, setErrors] = useState({});
+  const formik = useFormik({
+    initialValues: {
+      country: "",
+      fullName: "",
+      phone: "",
+      city: "",
+      postalCode: "",
+      street: "",
+      house: "",
+      apartment: "",
+      isDefault: false,
+    },
+    validationSchema: addressSchema,
+    onSubmit: async (values) => {
+      if (editingAddress) {
+        await address.editAddress(editingAddress.id, values);
+      } else {
+        await address.addAddress(values);
+      }
+      onHide();
+    },
+    enableReinitialize: true,
+  });
 
   useEffect(() => {
     if (editingAddress) {
-      setFormData({
-        country: editingAddress.country,
-        fullName: editingAddress.fullName,
-        phone: editingAddress.phone,
-        city: editingAddress.city,
-        postalCode: editingAddress.postalCode,
-        street: editingAddress.street,
-        house: editingAddress.house,
+      formik.setValues({
+        country: editingAddress.country || "",
+        fullName: editingAddress.fullName || "",
+        phone: editingAddress.phone || "",
+        city: editingAddress.city || "",
+        postalCode: editingAddress.postalCode || "",
+        street: editingAddress.street || "",
+        house: editingAddress.house || "",
         apartment: editingAddress.apartment || "",
-        isDefault: editingAddress.isDefault,
-      });
-    } else {
-      setFormData({
-        country: "",
-        fullName: "",
-        phone: "",
-        city: "",
-        postalCode: "",
-        street: "",
-        house: "",
-        apartment: "",
-        isDefault: false,
+        isDefault: editingAddress.isDefault || false,
       });
     }
-    setErrors({});
-  }, [editingAddress, show]);
+  }, [editingAddress]);
 
-  const formatPhone = (value) => {
-    const digits = value.replace(/\D/g, "");
-    let result = "+7";
-
-    if (digits.length > 1) result += ` (${digits.slice(1, 4)}`;
-    if (digits.length >= 4) result += `) ${digits.slice(4, 7)}`;
-    if (digits.length >= 7) result += `-${digits.slice(7, 9)}`;
-    if (digits.length >= 9) result += `-${digits.slice(9, 11)}`;
-
-    return result.slice(0, 18);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = name === "phone" ? formatPhone(value) : value;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : newValue,
-    }));
-
-    if (errors[name]) {
-      validateField(name, newValue);
-    }
-  };
-
-  const validateField = (name, value) => {
-    let error = "";
-
-    if (
-      [
-        "country",
-        "fullName",
-        "phone",
-        "city",
-        "postalCode",
-        "street",
-        "house",
-      ].includes(name)
-    ) {
-      error = validateEmpty(value);
-    }
-
-    if (name === "fullName" && !error) {
-      error = validateFullName(value);
-    }
-
-    if (name === "phone" && !error) {
-      const phonePattern = /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/;
-      if (!phonePattern.test(value)) {
-        error = "Введите номер в формате +7 (999) 999-99-99";
-      }
-    }
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-
-    return !error;
-  };
-
-  const validateForm = () => {
-    const fieldNames = [
-      "country",
-      "fullName",
-      "phone",
-      "city",
-      "postalCode",
-      "street",
-      "house",
-    ];
-
-    const valid = fieldNames.every((field) =>
-      validateField(field, formData[field])
-    );
-    return valid;
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    if (editingAddress) {
-      await address.editAddress(editingAddress.id, formData);
-    } else {
-      await address.addAddress(formData);
-    }
-
-    onHide();
+  const handlePhoneChange = (e) => {
+    const formatted = formatPhone(e.target.value);
+    formik.setFieldValue("phone", formatted);
   };
 
   return (
@@ -151,7 +116,7 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="bg-dark text-white">
-        <Form onSubmit={handleSave}>
+        <Form onSubmit={formik.handleSubmit}>
           {[
             {
               name: "country",
@@ -161,12 +126,13 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
             {
               name: "fullName",
               label: "ФИО получателя",
-              placeholder: "Иванов Иван Иванович",
+              placeholder: "Иванов Иван",
             },
             {
               name: "phone",
               label: "Телефон",
               placeholder: "+7 (999) 999-99-99",
+              onChange: handlePhoneChange,
             },
             { name: "city", label: "Город", placeholder: "Москва" },
             {
@@ -176,21 +142,19 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
             },
             { name: "street", label: "Улица", placeholder: "ул. Пушкина" },
             { name: "house", label: "Дом", placeholder: "д. 1" },
-          ].map(({ name, label, placeholder }) => (
+          ].map(({ name, label, placeholder, onChange }) => (
             <Form.Group className="mb-2" key={name}>
               <Form.Label>{label} *</Form.Label>
               <Form.Control
-                type="text"
                 name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                onBlur={(e) => validateField(name, e.target.value)}
                 placeholder={placeholder}
-                isInvalid={!!errors[name]}
-                maxLength={name === "phone" ? 18 : undefined}
+                value={formik.values[name]}
+                onChange={onChange || formik.handleChange}
+                onBlur={formik.handleBlur}
+                isInvalid={formik.touched[name] && !!formik.errors[name]}
               />
               <Form.Control.Feedback type="invalid">
-                {errors[name]}
+                {formik.errors[name]}
               </Form.Control.Feedback>
             </Form.Group>
           ))}
@@ -198,12 +162,16 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
           <Form.Group className="mb-2">
             <Form.Label>Квартира</Form.Label>
             <Form.Control
-              type="text"
               name="apartment"
-              value={formData.apartment}
-              onChange={handleChange}
               placeholder="кв. 10"
+              value={formik.values.apartment}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              isInvalid={formik.touched.apartment && !!formik.errors.apartment}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.apartment}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-2 form-check form-switch">
@@ -211,8 +179,8 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
               type="checkbox"
               label="Сделать по умолчанию"
               name="isDefault"
-              checked={formData.isDefault}
-              onChange={handleChange}
+              checked={formik.values.isDefault}
+              onChange={formik.handleChange}
             />
           </Form.Group>
 
