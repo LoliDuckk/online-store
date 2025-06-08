@@ -233,12 +233,12 @@ const OrderPage = observer(() => {
                 <Col md={6}>
                   <Form.Check
                     type="radio"
-                    id="pay-mir"
-                    label="Картой «Мир»"
+                    id="pay-cash"
+                    label="Наличными"
                     name="paymentMethod"
-                    value="mir"
-                    checked={paymentMethod === "mir"}
-                    onChange={() => setPaymentMethod("mir")}
+                    value="cash"
+                    checked={paymentMethod === "cash"}
+                    onChange={() => setPaymentMethod("cash")}
                   />
                 </Col>
               </Row>
@@ -247,35 +247,11 @@ const OrderPage = observer(() => {
                   <Form.Check
                     type="radio"
                     id="pay-visa-russia"
-                    label="Картой (Visa, Mastercard РФ)"
+                    label="Картой (Visa, Mastercard)"
                     name="paymentMethod"
-                    value="visa_russia"
-                    checked={paymentMethod === "visa_russia"}
-                    onChange={() => setPaymentMethod("visa_russia")}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Form.Check
-                    type="radio"
-                    id="pay-visa-foreign"
-                    label="Картой (Visa, Mastercard, Amex)"
-                    name="paymentMethod"
-                    value="visa_foreign"
-                    checked={paymentMethod === "visa_foreign"}
-                    onChange={() => setPaymentMethod("visa_foreign")}
-                  />
-                </Col>
-              </Row>
-              <Row className="mt-2">
-                <Col md={6}>
-                  <Form.Check
-                    type="radio"
-                    id="pay-crypto"
-                    label="Криптовалюта"
-                    name="paymentMethod"
-                    value="crypto"
-                    checked={paymentMethod === "crypto"}
-                    onChange={() => setPaymentMethod("crypto")}
+                    value="card"
+                    checked={paymentMethod === "card"}
+                    onChange={() => setPaymentMethod("card")}
                   />
                 </Col>
               </Row>
