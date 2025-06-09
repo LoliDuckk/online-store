@@ -1,50 +1,46 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { createType, fetchCategories } from "../../http/deviceApi";
-import { validateEmpty, validateFile } from "../../utils/validate";
 import { Context } from "../../main";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const CreateType = ({ show, onHide }) => {
-  const [value, setValue] = useState("");
-  const [file, setFile] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const { device } = useContext(Context);
 
   useEffect(() => {
     fetchCategories().then((data) => device.setCategories(data));
   }, []);
 
-  const [errors, setErrors] = useState({
-    value: "",
-    file: "",
-    category: "",
-  });
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      file: null,
+      categoryId: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .trim()
+        .min(2, "Слишком короткое название")
+        .required("Обязательное поле"),
+      file: Yup.mixed()
+        .required("Изображение обязательно")
+        .test("fileType", "Только изображения (jpeg/png)", (value) => {
+          return value && ["image/jpeg", "image/png"].includes(value.type);
+        }),
+      categoryId: Yup.string().required("Выберите категорию"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("img", values.file);
+      formData.append("categoryId", values.categoryId);
 
-  const selectFile = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const addType = () => {
-    const newErrors = {
-      value: validateEmpty(value),
-      file: validateFile(file),
-      category: validateEmpty(selectedCategory),
-    };
-
-    setErrors(newErrors);
-    if (Object.values(newErrors).some((error) => error !== "")) return;
-
-    const formData = new FormData();
-    formData.append("name", value);
-    formData.append("img", file);
-    formData.append("categoryId", selectedCategory);
-
-    createType(formData).then((data) => {
-      setValue("");
-      setSelectedCategory("");
+      await createType(formData);
+      resetForm();
       onHide();
-    });
-  };
+    },
+  });
 
   return (
     <Modal
@@ -56,24 +52,29 @@ const CreateType = ({ show, onHide }) => {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Добавить тип
-        </Modal.Title>
+        <Modal.Title>Добавить тип</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={formik.handleSubmit}>
           <Form.Control
-            placeholder={"Введите название типа"}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            name="name"
+            placeholder="Введите название типа"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.name && !!formik.errors.name}
           />
-          {errors.value && (
-            <Form.Text className="text-danger">{errors.value}</Form.Text>
-          )}
+          <Form.Control.Feedback type="invalid">
+            {formik.errors.name}
+          </Form.Control.Feedback>
+
           <Form.Select
             className="mt-3"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            name="categoryId"
+            value={formik.values.categoryId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.categoryId && !!formik.errors.categoryId}
           >
             <option value="">Выберите категорию</option>
             {device.categories.map((cat) => (
@@ -82,20 +83,30 @@ const CreateType = ({ show, onHide }) => {
               </option>
             ))}
           </Form.Select>
-          {errors.category && (
-            <Form.Text className="text-danger">{errors.category}</Form.Text>
-          )}
-          <Form.Control className="mt-3" type="file" onChange={selectFile} />
-          {errors.file && (
-            <Form.Text className="text-danger">{errors.file}</Form.Text>
-          )}
+          <Form.Control.Feedback type="invalid">
+            {formik.errors.categoryId}
+          </Form.Control.Feedback>
+
+          <Form.Control
+            className="mt-3"
+            type="file"
+            name="file"
+            onChange={(e) =>
+              formik.setFieldValue("file", e.currentTarget.files[0])
+            }
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.file && !!formik.errors.file}
+          />
+          <Form.Control.Feedback type="invalid">
+            {formik.errors.file}
+          </Form.Control.Feedback>
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-danger" onClick={onHide}>
           Закрыть
         </Button>
-        <Button variant="outline-success" onClick={addType}>
+        <Button variant="outline-success" onClick={formik.handleSubmit}>
           Добавить
         </Button>
       </Modal.Footer>

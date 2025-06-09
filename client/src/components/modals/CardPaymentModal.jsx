@@ -1,52 +1,57 @@
-import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import {
-  validateCardNumber,
-  validateExpiry,
-  validateCVC,
-  validateFullName,
-} from "../../utils/validate";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const cardSchema = Yup.object().shape({
+  cardName: Yup.string()
+    .matches(
+      /^[A-ZА-ЯЁ][A-ZА-ЯЁ]+\s[A-ZА-ЯЁ]+$/i,
+      "Введите имя и фамилию через пробел"
+    )
+    .required("Обязательное поле"),
+
+  cardNumber: Yup.string()
+    .matches(
+      /^\d{4} \d{4} \d{4} \d{4}$/,
+      "Номер карты должен быть в формате 0000 0000 0000 0000"
+    )
+    .required("Обязательное поле"),
+
+  expiry: Yup.string()
+    .matches(/^\d{2}\/\d{2}$/, "Введите срок в формате MM/YY")
+    .required("Обязательное поле"),
+
+  cvc: Yup.string()
+    .matches(/^\d{3,4}$/, "Введите 3–4 цифры")
+    .required("Обязательное поле"),
+});
+
+const formatCardNumber = (value) =>
+  value
+    .replace(/\D/g, "")
+    .replace(/(.{4})/g, "$1 ")
+    .trim()
+    .slice(0, 19);
+
+const formatExpiry = (value) =>
+  value
+    .replace(/\D/g, "")
+    .replace(/^(.{2})(.)/, "$1/$2")
+    .slice(0, 5);
 
 const CardPaymentModal = ({ show, onHide, onSuccess }) => {
-  const [cardName, setCardName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvc, setCvc] = useState("");
-
-  const [errors, setErrors] = useState({
-    name: "",
-    card: "",
-    expiry: "",
-    cvc: "",
+  const formik = useFormik({
+    initialValues: {
+      cardName: "",
+      cardNumber: "",
+      expiry: "",
+      cvc: "",
+    },
+    validationSchema: cardSchema,
+    onSubmit: (values) => {
+      onSuccess(values);
+    },
   });
-
-  const handlePay = () => {
-    const newErrors = {
-      name: validateFullName(cardName),
-      card: validateCardNumber(cardNumber),
-      expiry: validateExpiry(expiry),
-      cvc: validateCVC(cvc),
-    };
-
-    setErrors(newErrors);
-
-    const hasErrors = Object.values(newErrors).some((e) => e !== "");
-    if (hasErrors) return;
-
-    onSuccess();
-  };
-
-  const formatCardNumber = (value) =>
-    value
-      .replace(/\D/g, "")
-      .replace(/(.{4})/g, "$1 ")
-      .trim();
-
-  const formatExpiry = (value) =>
-    value
-      .replace(/\D/g, "")
-      .replace(/^(.{2})(.)/, "$1/$2")
-      .slice(0, 5);
 
   return (
     <Modal
@@ -80,89 +85,113 @@ const CardPaymentModal = ({ show, onHide, onSuccess }) => {
               fontSize="16"
               fontWeight="bold"
             >
-              БАНК НЕВОЗМОЖНОГО
+              ПРИМЕР БАНКА
             </text>
             <text x="20" y="100" fill="#fff" fontSize="20" letterSpacing="2px">
-              {cardNumber || "#### #### #### ####"}
+              {formik.values.cardNumber || "#### #### #### ####"}
             </text>
             <text x="20" y="140" fill="#fff" fontSize="14">
-              {cardName || "ИМЯ ФАМИЛИЯ"}
+              {formik.values.cardName || "ИМЯ ФАМИЛИЯ"}
             </text>
             <text x="320" y="140" fill="#fff" fontSize="14">
-              {expiry || "MM/YY"}
+              {formik.values.expiry || "MM/YY"}
             </text>
-            <circle cx="360" cy="40" r="20" fill="#ffc107" opacity="0.8" />
           </svg>
         </div>
 
-        <Form data-bs-theme="dark">
+        <Form data-bs-theme="dark" onSubmit={formik.handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Имя и фамилия</Form.Label>
             <Form.Control
               type="text"
+              name="cardName"
               placeholder="Иван Иванов"
-              value={cardName}
-              onChange={(e) => setCardName(e.target.value.toUpperCase())}
+              value={formik.values.cardName}
+              onChange={(e) =>
+                formik.setFieldValue("cardName", e.target.value.toUpperCase())
+              }
+              onBlur={formik.handleBlur}
+              isInvalid={formik.touched.cardName && !!formik.errors.cardName}
             />
-            {errors.name && (
-              <Form.Text className="text-danger">{errors.name}</Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.cardName}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Номер карты</Form.Label>
             <Form.Control
               type="text"
+              name="cardNumber"
               placeholder="4242 4242 4242 4242"
               maxLength={19}
-              value={cardNumber}
-              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+              value={formik.values.cardNumber}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "cardNumber",
+                  formatCardNumber(e.target.value)
+                )
+              }
+              onBlur={formik.handleBlur}
+              isInvalid={
+                formik.touched.cardNumber && !!formik.errors.cardNumber
+              }
             />
-            {errors.card && (
-              <Form.Text className="text-danger">{errors.card}</Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.cardNumber}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Срок действия</Form.Label>
             <Form.Control
               type="text"
+              name="expiry"
               placeholder="MM/YY"
               maxLength={5}
-              value={expiry}
-              onChange={(e) => setExpiry(formatExpiry(e.target.value))}
+              value={formik.values.expiry}
+              onChange={(e) =>
+                formik.setFieldValue("expiry", formatExpiry(e.target.value))
+              }
+              onBlur={formik.handleBlur}
+              isInvalid={formik.touched.expiry && !!formik.errors.expiry}
             />
-            {errors.expiry && (
-              <Form.Text className="text-danger">{errors.expiry}</Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.expiry}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>CVC/CVV</Form.Label>
             <Form.Control
               type="text"
+              name="cvc"
               placeholder="123"
               maxLength={4}
-              value={cvc}
+              value={formik.values.cvc}
               onChange={(e) =>
-                setCvc(e.target.value.replace(/\D/g, "").slice(0, 4))
+                formik.setFieldValue(
+                  "cvc",
+                  e.target.value.replace(/\D/g, "").slice(0, 4)
+                )
               }
+              onBlur={formik.handleBlur}
+              isInvalid={formik.touched.cvc && !!formik.errors.cvc}
             />
-            {errors.cvc && (
-              <Form.Text className="text-danger">{errors.cvc}</Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.cvc}
+            </Form.Control.Feedback>
           </Form.Group>
+
+          <Button
+            variant="outline-warning"
+            type="submit"
+            className="w-100 fw-bold"
+          >
+            Оплатить
+          </Button>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button
-          variant="outline-warning"
-          className="w-100 fw-bold"
-          onClick={handlePay}
-        >
-          Оплатить
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };

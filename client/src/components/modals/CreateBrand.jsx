@@ -1,29 +1,25 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import { createBrand } from "../../http/deviceApi";
-import { useState } from "react";
-import { validateEmpty } from "../../utils/validate";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const CreateBrand = ({ show, onHide }) => {
-  const [value, setValue] = useState("");
-
-  const [errors, setErrors] = useState({
-    value: "",
+  const formik = useFormik({
+    initialValues: { name: "" },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .trim()
+        .min(2, "Слишком короткое название")
+        .max(30, "Слишком длинное название")
+        .required("Обязательное поле"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      await createBrand({ name: values.name });
+      resetForm();
+      onHide();
+    },
   });
 
-  const addBrand = () => {
-    const newErrors = {
-      value: validateEmpty(value),
-    };
-
-    setErrors(newErrors);
-
-    if (Object.values(newErrors).some((error) => error !== "")) return;
-
-    createBrand({ name: value }).then((data) => {
-      setValue("");
-      onHide();
-    });
-  };
   return (
     <Modal
       style={{ color: "white" }}
@@ -34,27 +30,28 @@ const CreateBrand = ({ show, onHide }) => {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Добавить бренд
-        </Modal.Title>
+        <Modal.Title>Добавить бренд</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={addBrand}>
+        <Form onSubmit={formik.handleSubmit}>
           <Form.Control
-            placeholder={"Введите название бренда"}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            name="name"
+            placeholder="Введите название бренда"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={formik.touched.name && !!formik.errors.name}
           />
-          {errors.value && (
-            <Form.Text className="text-danger">{errors.value}</Form.Text>
-          )}
+          <Form.Control.Feedback type="invalid">
+            {formik.errors.name}
+          </Form.Control.Feedback>
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-danger" onClick={onHide}>
           Закрыть
         </Button>
-        <Button variant="outline-success" onClick={addBrand}>
+        <Button variant="outline-success" onClick={formik.handleSubmit}>
           Добавить
         </Button>
       </Modal.Footer>

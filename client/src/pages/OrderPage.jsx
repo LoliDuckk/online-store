@@ -15,7 +15,7 @@ import { createOrder } from "../http/orderApi";
 import { useNavigate } from "react-router-dom";
 import CreateAddress from "../components/modals/CreateAddress";
 import CardPaymentModal from "../components/modals/CardPaymentModal";
-import { SHOP_ROUTE } from "../utils/consts";
+import { HISTORY_ROUTE } from "../utils/consts";
 
 const OrderPage = observer(() => {
   const { basket, address } = useContext(Context);
@@ -87,7 +87,7 @@ const OrderPage = observer(() => {
       await createOrder(orderData);
       alert("Заказ успешно оформлен!");
       basket.setItems([]);
-      navigate(SHOP_ROUTE);
+      navigate(HISTORY_ROUTE);
     } catch (e) {
       console.error(e);
       alert("Ошибка при создании заказа");
