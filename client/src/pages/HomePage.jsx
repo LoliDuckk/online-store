@@ -1,4 +1,4 @@
-import { Carousel, Container, Image, Row } from "react-bootstrap";
+import { Carousel, Col, Container, Image, Row } from "react-bootstrap";
 import test from "../assets/1320by500.jpg";
 import img1 from "../assets/bg.png";
 import { useNavigate } from "react-router-dom";
@@ -42,9 +42,11 @@ export default function HomePage() {
       </Carousel>
 
       <h2 className="text-white mt-4 mb-3">Популярные товары</h2>
-      <Row>
+      <Row className="mb-3 g-3">
         {popularDevices.map((device) => (
-          <DeviceItem key={device.id} device={device} />
+          <Col key={device.id} xs={12} sm={6} md={4} lg={3}>
+            <DeviceItem device={device} />
+          </Col>
         ))}
       </Row>
     </Container>

@@ -24,13 +24,11 @@ export default function DeviceItem({ device }) {
   };
 
   return (
-    <Col md={3} className="mt-3">
+    <>
       <Card
-        className="d-flex flex-column align-items-center p-3 device-card"
+        className="d-flex flex-column align-items-center p-3 device-card h-100"
         style={{
           cursor: "pointer",
-          width: 270,
-          height: 340,
           transition: "box-shadow 0.3s ease",
           backgroundColor: "#303030",
         }}
@@ -39,10 +37,14 @@ export default function DeviceItem({ device }) {
         <Image
           src={`${import.meta.env.VITE_API_URL}${device.img}`}
           alt={device.name}
-          width={200}
-          height={200}
           className="mb-3"
-          style={{ objectFit: "cover" }}
+          style={{
+            width: "100%",
+            height: "150px",
+            objectFit: "contain",
+            borderRadius: "0.5rem",
+            backgroundColor: "#1f1f1f",
+          }}
         />
 
         <div
@@ -71,11 +73,11 @@ export default function DeviceItem({ device }) {
 
       <style>
         {`
-          .device-card:hover {
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-          }
-        `}
+      .device-card:hover {
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+      }
+    `}
       </style>
-    </Col>
+    </>
   );
 }
