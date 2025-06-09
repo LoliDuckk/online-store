@@ -130,7 +130,7 @@ const NavBar = observer(() => {
               >
                 <Image src={cmsIcon} height={30} />
                 <br />
-                <span className="fs-5">Админ</span>
+                <span className="fs-5">Админ панель</span>
               </Button>
             )}
 
