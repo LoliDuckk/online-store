@@ -9,4 +9,21 @@ const translateStatus = (status) => {
   return map[status] || status;
 };
 
-export default translateStatus;
+const translatePaymentMethod = (method) => {
+  const map = {
+    card: "Банковская карта",
+    cash: "Наличными при получении",
+  };
+  return map[method] || method;
+};
+
+const translateDeliveryMethod = (method) => {
+  const map = {
+    courier: "Курьерская доставка",
+    pickup: "Самовывоз",
+    Express: "Экспресс доставка",
+  };
+  return map[method] || method;
+};
+
+export { translateStatus, translatePaymentMethod, translateDeliveryMethod };

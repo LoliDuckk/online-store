@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Modal, Table } from "react-bootstrap";
 import { fetchAllOrders, updateOrderStatus } from "../../http/orderApi";
-import translateStatus from "../../utils/translate";
+import { translateStatus } from "../../utils/translate";
 
 const statusOptions = [
   "PENDING",

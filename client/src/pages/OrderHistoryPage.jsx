@@ -3,11 +3,16 @@ import { fetchOrders } from "../http/orderApi";
 import { observer } from "mobx-react-lite";
 import { Container, Accordion, Table, Spinner } from "react-bootstrap";
 import moment from "moment";
-import translateStatus from "../utils/translate";
+import {
+  translateStatus,
+  translatePaymentMethod,
+  translateDeliveryMethod,
+} from "../utils/translate";
 
 const OrderHistoryPage = observer(() => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  console.log(orders);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -45,13 +50,19 @@ const OrderHistoryPage = observer(() => {
           {orders.map((order, idx) => (
             <Accordion.Item eventKey={String(idx)} key={order.id}>
               <Accordion.Header>
-                <div className="d-flex justify-content-between w-100">
+                <div className="d-flex flex-column flex-md-row justify-content-between w-100 gap-2">
                   <span>Заказ №{order.id}</span>
                   <span>
                     {moment(order.createdAt).format("DD.MM.YYYY HH:mm")}
                   </span>
                   <span>Сумма: {order.total} ₽</span>
-                  <span style={{ marginRight: "10px" }}>
+                  <span
+                    style={{
+                      marginRight: "10px",
+                      minWidth: "200px",
+                      display: "inline-block",
+                    }}
+                  >
                     Статус: {translateStatus(order.status)}
                   </span>
                 </div>
@@ -93,8 +104,39 @@ const OrderHistoryPage = observer(() => {
                     ))}
                   </tbody>
                 </Table>
-                <div className="d-flex justify-content-end">
+                <div className="d-flex flex-column flex-md-row justify-content-between gap-4 mt-3">
                   <div>
+                    <h5>Адрес доставки</h5>
+                    {(() => {
+                      try {
+                        const address = JSON.parse(order.address);
+                        return (
+                          <div style={{ whiteSpace: "pre-line" }}>
+                            Страна: {address.country}
+                            {"\n"}
+                            {address.fullName}
+                            {"\n"} {address.street}, дом {address.house}, кв.{" "}
+                            {address.apartment}
+                            {"\n"}г. {address.city}, {address.postalCode}
+                            {"\n"}Телефон: {address.phone}
+                          </div>
+                        );
+                      } catch {
+                        return <div>Не удалось загрузить адрес</div>;
+                      }
+                    })()}
+                  </div>
+
+                  <div className="text-md-end">
+                    <div>
+                      Способ доставки:{" "}
+                      {translateDeliveryMethod(order.deliveryMethod)}
+                    </div>
+                    <div>Ожидаемая доставка: {order.deliveryEstimate}</div>
+                    <div>
+                      Метод оплаты:{" "}
+                      {translatePaymentMethod(order.paymentMethod)}
+                    </div>
                     <div>Доставка: {order.shippingCost} ₽</div>
                     <div className="fw-bold mt-2">Итого: {order.total} ₽</div>
                   </div>
