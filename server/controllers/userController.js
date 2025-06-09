@@ -1,7 +1,8 @@
 const ApiError = require("../error/ApiError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User, Basket } = require("../models/models");
+const { User, Basket, Order } = require("../models/models");
+const { Sequelize } = require("../db");
 
 const generateJwt = (id, login, email, role) => {
   return jwt.sign({ id, login, email, role }, process.env.JWT_SECRET_KEY, {
@@ -59,6 +60,36 @@ class UserController {
 
     const token = generateJwt(user.id, user.login, user.email, user.role);
     return res.json({ token });
+  }
+
+  async getAllUsersWithStats(req, res) {
+    try {
+      const users = await User.findAll({
+        attributes: [
+          "id",
+          "login",
+          "email",
+          "createdAt",
+          [Sequelize.fn("COUNT", Sequelize.col("orders.id")), "orderCount"],
+          [Sequelize.fn("SUM", Sequelize.col("orders.total")), "totalSpent"],
+        ],
+        include: [
+          {
+            model: Order,
+            attributes: [],
+          },
+        ],
+        group: ["user.id"],
+        raw: true,
+      });
+
+      return res.json(users);
+    } catch (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ message: "Ошибка при получении пользователей" });
+    }
   }
 
   async check(req, res, next) {

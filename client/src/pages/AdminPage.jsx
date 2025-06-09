@@ -5,6 +5,7 @@ import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
 import DeleteModal from "../components/modals/DeleteModal";
 import ManageOrders from "../components/modals/ManageOrders";
+import UserStatsModal from "../components/modals/UserStatsModal";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../main";
@@ -18,6 +19,7 @@ export default function AdminPage() {
   const [deviceVisible, setDeviceVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [orderModalVisible, setOrderModalVisible] = useState(false);
+  const [userStatsVisible, setUserStatsVisible] = useState(false);
 
   useEffect(() => {
     try {
@@ -29,6 +31,7 @@ export default function AdminPage() {
 
   return (
     <Container className="d-flex flex-column">
+      <h2 className="text-white mt-3">Управление товарами</h2>
       <Button
         variant={"outline-light"}
         className={"mt-2"}
@@ -65,12 +68,20 @@ export default function AdminPage() {
       >
         Удалить категорию / тип / бренд / устройство
       </Button>
+      <h2 className="text-white mt-3">Управление пользователями и заказами</h2>
       <Button
         variant={"outline-light"}
         className={"mt-2"}
         onClick={() => setOrderModalVisible(true)}
       >
         Управление заказами
+      </Button>
+      <Button
+        variant={"outline-light"}
+        className={"mt-2"}
+        onClick={() => setUserStatsVisible(true)}
+      >
+        Пользователи и статистика
       </Button>
 
       <CreateType show={typeVisible} onHide={() => setTypeVisible(false)} />
@@ -90,6 +101,10 @@ export default function AdminPage() {
       <ManageOrders
         show={orderModalVisible}
         onHide={() => setOrderModalVisible(false)}
+      />
+      <UserStatsModal
+        show={userStatsVisible}
+        onHide={() => setUserStatsVisible(false)}
       />
     </Container>
   );
