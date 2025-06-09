@@ -25,8 +25,11 @@ const CreateType = ({ show, onHide }) => {
         .required("Обязательное поле"),
       file: Yup.mixed()
         .required("Изображение обязательно")
-        .test("fileType", "Только изображения (jpeg/png)", (value) => {
-          return value && ["image/jpeg", "image/png"].includes(value.type);
+        .test("fileType", "Только изображения (jpeg/png/webp)", (value) => {
+          return (
+            value &&
+            ["image/jpeg", "image/png", "image/webp"].includes(value.type)
+          );
         }),
       categoryId: Yup.string().required("Выберите категорию"),
     }),
