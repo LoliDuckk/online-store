@@ -25,10 +25,13 @@ const ProfilePage = observer(() => {
   };
 
   return (
-    <Container className="mt-4 text-white" data-bs-theme="dark">
-      <Row>
-        <Col md={8}>
-          <Card className="mb-4 bg-dark text-white">
+    <Container className=" mt-4 text-white" data-bs-theme="dark">
+      <Row
+        className="justify-content-center align-items-center"
+        style={{ minHeight: "60vh" }}
+      >
+        <Col md={6}>
+          <Card className="mb-4 bg-dark text-white shadow-lg">
             <Card.Header className="fw-bold">Профиль пользователя</Card.Header>
             <Card.Body>
               <p>

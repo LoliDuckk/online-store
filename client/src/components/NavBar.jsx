@@ -50,19 +50,22 @@ const NavBar = observer(() => {
   }, [user.isAuth]);
 
   return (
-    <>
-      <Navbar bg="black" data-bs-theme="dark">
-        <Container>
-          <NavLink
-            className="fs-1 text-decoration-none d-flex align-items-center"
-            style={{ color: "white" }}
-            to={HOME_ROUTE}
-          >
-            <Image src={logoIcon} height={50} style={{ marginRight: "10px" }} />
-            <span>Techno</span>
-          </NavLink>
+    <Navbar bg="black" data-bs-theme="dark" expand="lg" className="py-2">
+      <Container>
+        <Navbar.Brand
+          as={NavLink}
+          to={HOME_ROUTE}
+          className="d-flex align-items-center text-white"
+        >
+          <Image src={logoIcon} height={50} className="me-2" />
+          <span className="fs-2">Techno</span>
+        </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="main-navbar" className="border-0" />
+
+        <Navbar.Collapse id="main-navbar">
           <Form
-            className="d-flex align-items-center mx-3"
+            className="d-flex align-items-center mx-lg-3 my-2 my-lg-0 w-100"
             onSubmit={(e) => {
               e.preventDefault();
               if (searchTerm.trim()) {
@@ -72,7 +75,6 @@ const NavBar = observer(() => {
                 setSearchTerm("");
               }
             }}
-            style={{ maxWidth: "500px", width: "100%" }}
           >
             <Form.Control
               type="search"
@@ -89,7 +91,7 @@ const NavBar = observer(() => {
             />
             <Button
               type="submit"
-              className="d-flex align-items-center justify-content-center rounded-end"
+              className="rounded-end d-flex align-items-center justify-content-center"
               style={{
                 backgroundColor: "#f0c000",
                 borderTopLeftRadius: 0,
@@ -103,72 +105,70 @@ const NavBar = observer(() => {
             </Button>
           </Form>
 
-          {user.isAuth ? (
-            <div className="d-flex align-items-end">
-              <Button
-                style={{
-                  position: "relative",
-                  marginRight: "10px",
-                  background: "none",
-                  border: "none",
-                }}
-                onClick={() => navigate(CATEGORY_ROUTE)}
-              >
-                <Image src={catalogIcon} height={30} />
-                <br />
-                <span className="fs-5">Каталог</span>
-              </Button>
-              {user.isAdmin ? (
-                <Button
-                  style={{
-                    position: "relative",
-                    marginRight: "10px",
-                    background: "none",
-                    border: "none",
-                  }}
-                  onClick={() => navigate(ADMIN_ROUTE)}
-                >
-                  <Image src={cmsIcon} height={30} />
-                  <br />
-                  <span className="fs-5">Админ панель</span>
-                </Button>
-              ) : (
-                ""
-              )}
-              <Button
-                style={{
-                  position: "relative",
-                  marginRight: "10px",
-                  background: "none",
-                  border: "none",
-                }}
-                onClick={() => navigate(BASKET_ROUTE)}
-              >
-                <Image src={basketIcon} height={30} />
-                <br />
-                <span className="fs-5">Корзина</span>
-                {basket.items.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "0px",
-                      right: "0px",
-                      width: "25px",
-                      height: "25px",
-                      background: "#ffc107",
-                      borderRadius: "50%",
-                      color: "black",
-                      fontSize: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {basket.items.length}
-                  </div>
-                )}
-              </Button>
+          <div className="d-flex flex-wrap align-items-end justify-content-end mt-3 mt-lg-0 w-100">
+            <Button
+              style={{
+                marginRight: "10px",
+                background: "none",
+                border: "none",
+              }}
+              onClick={() => navigate(CATEGORY_ROUTE)}
+            >
+              <Image src={catalogIcon} height={30} />
+              <br />
+              <span className="fs-5">Каталог</span>
+            </Button>
 
+            {user.isAdmin && (
+              <Button
+                style={{
+                  marginRight: "10px",
+                  background: "none",
+                  border: "none",
+                }}
+                onClick={() => navigate(ADMIN_ROUTE)}
+              >
+                <Image src={cmsIcon} height={30} />
+                <br />
+                <span className="fs-5">Админ</span>
+              </Button>
+            )}
+
+            <Button
+              style={{
+                marginRight: "10px",
+                background: "none",
+                border: "none",
+                position: "relative",
+              }}
+              onClick={() => navigate(BASKET_ROUTE)}
+            >
+              <Image src={basketIcon} height={30} />
+              <br />
+              <span className="fs-5">Корзина</span>
+              {basket.items.length > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0px",
+                    right: "0px",
+                    width: "25px",
+                    height: "25px",
+                    background: "#ffc107",
+                    borderRadius: "50%",
+                    color: "black",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {basket.items.length}
+                </div>
+              )}
+            </Button>
+
+            {user.isAuth ? (
               <Dropdown>
                 <Dropdown.Toggle style={{ background: "none", border: "none" }}>
                   <Image src={profileIcon} height={30} />
@@ -177,45 +177,37 @@ const NavBar = observer(() => {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
-                    className="fs-5"
                     as="button"
                     onClick={() => navigate(PROFILE_ROUTE)}
                   >
                     Личный кабинет
                   </Dropdown.Item>
                   <Dropdown.Item
-                    className="fs-5"
                     as="button"
                     onClick={() => navigate(HISTORY_ROUTE)}
                   >
                     История заказов
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item
-                    className="fs-5"
-                    as="button"
-                    onClick={() => logOut()}
-                  >
+                  <Dropdown.Item as="button" onClick={logOut}>
                     Выйти
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-            </div>
-          ) : (
-            <>
+            ) : (
               <Button
-                className="d-flex flex-column"
                 onClick={() => navigate(LOGIN_ROUTE)}
                 style={{ background: "none", border: "none" }}
+                className="d-flex flex-column"
               >
                 <Image src={profileIcon} height={30} />
                 <span className="fs-5">Войти</span>
               </Button>
-            </>
-          )}
-        </Container>
-      </Navbar>
-    </>
+            )}
+          </div>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 });
 
