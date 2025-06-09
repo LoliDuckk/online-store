@@ -4,6 +4,7 @@ import CreateCategory from "../components/modals/CreateCategory";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateDevice from "../components/modals/CreateDevice";
 import DeleteModal from "../components/modals/DeleteModal";
+import ManageOrders from "../components/modals/ManageOrders";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../main";
@@ -16,6 +17,7 @@ export default function AdminPage() {
   const [brandVisible, setBrandVisible] = useState(false);
   const [deviceVisible, setDeviceVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [orderModalVisible, setOrderModalVisible] = useState(false);
 
   useEffect(() => {
     try {
@@ -63,6 +65,13 @@ export default function AdminPage() {
       >
         Удалить категорию / тип / бренд / устройство
       </Button>
+      <Button
+        variant={"outline-light"}
+        className={"mt-2"}
+        onClick={() => setOrderModalVisible(true)}
+      >
+        Управление заказами
+      </Button>
 
       <CreateType show={typeVisible} onHide={() => setTypeVisible(false)} />
       <CreateCategory
@@ -77,6 +86,10 @@ export default function AdminPage() {
       <DeleteModal
         show={deleteModalVisible}
         onHide={() => setDeleteModalVisible(false)}
+      />
+      <ManageOrders
+        show={orderModalVisible}
+        onHide={() => setOrderModalVisible(false)}
       />
     </Container>
   );

@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../main";
+import { useEffect, useState } from "react";
 import { fetchOrders } from "../http/orderApi";
 import { observer } from "mobx-react-lite";
 import { Container, Accordion, Table, Spinner } from "react-bootstrap";
 import moment from "moment";
+import translateStatus from "../utils/translate";
 
 const OrderHistoryPage = observer(() => {
   const [orders, setOrders] = useState([]);
@@ -52,7 +52,7 @@ const OrderHistoryPage = observer(() => {
                   </span>
                   <span>Сумма: {order.total} ₽</span>
                   <span style={{ marginRight: "10px" }}>
-                    Статус: {order.status}
+                    Статус: {translateStatus(order.status)}
                   </span>
                 </div>
               </Accordion.Header>

@@ -111,9 +111,6 @@ export default function DeleteEntityModal({ show, onHide }) {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Отмена
-        </Button>
         <Button
           variant="danger"
           onClick={handleDelete}

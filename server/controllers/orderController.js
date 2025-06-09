@@ -115,6 +115,37 @@ class OrderController {
 
     return res.json(orders);
   }
+
+  async getAllAdmin(req, res) {
+    try {
+      const orders = await Order.findAll({
+        include: [
+          {
+            model: OrderDevice,
+            as: "order_devices",
+            include: [Device],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      res.json(orders);
+    } catch (e) {
+      res.status(500).json({ message: "Ошибка при получении заказов" });
+    }
+  }
+
+  async updateStatus(req, res) {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findByPk(orderId);
+    if (!order) return res.status(404).json({ message: "Заказ не найден" });
+
+    order.status = status;
+    await order.save();
+
+    return res.json(order);
+  }
 }
 
 module.exports = new OrderController();
