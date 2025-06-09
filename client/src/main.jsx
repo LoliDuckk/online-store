@@ -10,16 +10,14 @@ import "bootstrap/dist/css/bootstrap.css";
 
 export const Context = createContext(null);
 
+const user = new UserStore();
+const device = new DeviceStore();
+const basket = new BasketStore();
+const address = new AddressStore();
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Context.Provider
-      value={{
-        user: new UserStore(),
-        device: new DeviceStore(),
-        basket: new BasketStore(),
-        address: new AddressStore(),
-      }}
-    >
+    <Context.Provider value={{ user, device, basket, address }}>
       <App />
     </Context.Provider>
   </StrictMode>

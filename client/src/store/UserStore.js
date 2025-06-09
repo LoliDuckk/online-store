@@ -12,6 +12,7 @@ export default class UserStore {
     this._isAuth = bool;
   }
   setUser(user) {
+    console.log("setUser called with:", user);
     this._user = user;
   }
   setIsAdmin(bool) {
