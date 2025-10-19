@@ -1,4 +1,4 @@
-🛠️ Tech Stack
-Frontend: React, Mobx
-Backend: Node.js, Express
-Database: PostgreSQL
+🛠️ Tech Stack <br>
+Frontend: React, Mobx <br>
+Backend: Node.js, Express <br>
+Database: PostgreSQL 
