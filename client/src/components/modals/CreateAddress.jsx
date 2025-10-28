@@ -142,7 +142,7 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
             { name: "house", label: "Дом", placeholder: "д. 1" },
           ].map(({ name, label, placeholder, onChange }) => (
             <Form.Group className="mb-2" key={name}>
-              <Form.Label>{label} *</Form.Label>
+              <Form.Label>{label} <span style={{color: "red"}}>*</span></Form.Label>
               <Form.Control
                 name={name}
                 placeholder={placeholder}
