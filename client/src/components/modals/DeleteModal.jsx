@@ -34,7 +34,7 @@ const entityMap = {
   },
 };
 
-export default function DeleteEntityModal({ show, onHide }) {
+export default function DeleteEntityModal({ show, onHide, onUpdated }) {
   const [entityType, setEntityType] = useState("");
   const [entities, setEntities] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -61,6 +61,7 @@ export default function DeleteEntityModal({ show, onHide }) {
       const updated = await entityMap[entityType].fetch();
       setEntities(updated.rows || updated);
       setSelectedId(null);
+      await onUpdated?.();
     }
   };
 

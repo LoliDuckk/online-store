@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CreateDevice = observer(({ show, onHide }) => {
+const CreateDevice = observer(({ show, onHide, onUpdated }) => {
   const { device } = useContext(Context);
   const [info, setInfo] = useState([]);
 
@@ -52,6 +52,7 @@ const CreateDevice = observer(({ show, onHide }) => {
       formData.append("info", JSON.stringify(info));
 
       await createDevice(formData);
+      await onUpdated?.();
       resetForm();
       setInfo([]);
       onHide();

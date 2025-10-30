@@ -3,7 +3,7 @@ import { createCategory } from "../../http/deviceApi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-export default function CreateCategory({ show, onHide }) {
+export default function CreateCategory({ show, onHide, onUpdated }) {
   const formik = useFormik({
     initialValues: { name: "" },
     validationSchema: Yup.object({
@@ -15,6 +15,7 @@ export default function CreateCategory({ show, onHide }) {
     }),
     onSubmit: async (values, { resetForm }) => {
       await createCategory({ name: values.name });
+      await onUpdated?.();
       resetForm();
       onHide();
     },

@@ -5,7 +5,7 @@ import { Context } from "../../main";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CreateType = ({ show, onHide }) => {
+const CreateType = ({ show, onHide, onUpdated }) => {
   const { device } = useContext(Context);
 
   useEffect(() => {
@@ -40,6 +40,7 @@ const CreateType = ({ show, onHide }) => {
       formData.append("categoryId", values.categoryId);
 
       await createType(formData);
+      await onUpdated?.();
       resetForm();
       onHide();
     },

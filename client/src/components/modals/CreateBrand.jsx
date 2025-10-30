@@ -3,7 +3,7 @@ import { createBrand } from "../../http/deviceApi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CreateBrand = ({ show, onHide }) => {
+const CreateBrand = ({ show, onHide, onUpdated }) => {
   const formik = useFormik({
     initialValues: { name: "" },
     validationSchema: Yup.object({
@@ -15,6 +15,7 @@ const CreateBrand = ({ show, onHide }) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       await createBrand({ name: values.name });
+      await onUpdated?.();
       resetForm();
       onHide();
     },
