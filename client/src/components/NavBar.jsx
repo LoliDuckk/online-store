@@ -133,67 +133,69 @@ const NavBar = observer(() => {
                 <span className="fs-5">Админ панель</span>
               </Button>
             )}
-
-            <Button
-              style={{
-                marginRight: "10px",
-                background: "none",
-                border: "none",
-                position: "relative",
-              }}
-              onClick={() => navigate(BASKET_ROUTE)}
-            >
-              <Image src={basketIcon} height={30} />
-              <br />
-              <span className="fs-5">Корзина</span>
-              {basket.items.length > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "0px",
-                    right: "0px",
-                    width: "25px",
-                    height: "25px",
-                    background: "#ffc107",
-                    borderRadius: "50%",
-                    color: "black",
-                    fontSize: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {basket.items.length}
-                </div>
-              )}
-            </Button>
-
             {user.isAuth ? (
-              <Dropdown>
-                <Dropdown.Toggle style={{ background: "none", border: "none" }}>
-                  <Image src={profileIcon} height={30} />
+              <>
+                <Button
+                  style={{
+                    marginRight: "10px",
+                    background: "none",
+                    border: "none",
+                    position: "relative",
+                  }}
+                  onClick={() => navigate(BASKET_ROUTE)}
+                >
+                  <Image src={basketIcon} height={30} />
                   <br />
-                  <span className="fs-5">Профиль</span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    as="button"
-                    onClick={() => navigate(PROFILE_ROUTE)}
+                  <span className="fs-5">Корзина</span>
+                  {basket.items.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "0px",
+                        right: "0px",
+                        width: "25px",
+                        height: "25px",
+                        background: "#ffc107",
+                        borderRadius: "50%",
+                        color: "black",
+                        fontSize: "14px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {basket.items.length}
+                    </div>
+                  )}
+                </Button>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    style={{ background: "none", border: "none" }}
                   >
-                    Личный кабинет
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as="button"
-                    onClick={() => navigate(HISTORY_ROUTE)}
-                  >
-                    История заказов
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item as="button" onClick={logOut}>
-                    Выйти
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+                    <Image src={profileIcon} height={30} />
+                    <br />
+                    <span className="fs-5">Профиль</span>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      as="button"
+                      onClick={() => navigate(PROFILE_ROUTE)}
+                    >
+                      Личный кабинет
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      as="button"
+                      onClick={() => navigate(HISTORY_ROUTE)}
+                    >
+                      История заказов
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item as="button" onClick={logOut}>
+                      Выйти
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </>
             ) : (
               <Button
                 onClick={() => navigate(LOGIN_ROUTE)}

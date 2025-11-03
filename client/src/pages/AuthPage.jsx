@@ -117,7 +117,7 @@ const AuthPage = observer(() => {
             <Form.Control
               name="password"
               type="password"
-              placeholder="Введите ваш пароль"
+              placeholder="Введите ваш пароль..."
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

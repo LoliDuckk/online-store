@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const uuid = require("uuid");
 const path = require("path");
+const fs = require("fs");
 const { Device, DeviceInfo } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -84,6 +85,11 @@ class DeviceController {
 
   async delete(req, res) {
     const { id } = req.params;
+    const device = await Device.findByPk(id);
+
+    const filePath = path.resolve(__dirname, "..", "static", device.img);
+    fs.unlinkSync(filePath);
+
     await Device.destroy({ where: { id } });
     return res.json({ message: "Устройство удалено" });
   }

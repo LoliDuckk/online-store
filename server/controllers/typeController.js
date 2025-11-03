@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
+const fs = require("fs");
 const { Type, Category } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -39,6 +40,12 @@ class TypeController {
 
   async delete(req, res) {
     const { id } = req.params;
+    const type = await Type.findByPk(id);
+    console.log(type);
+    const filePath = path.resolve(__dirname, "..", "static", type.img);
+    console.log(filePath);
+    fs.unlinkSync(filePath);
+
     await Type.destroy({ where: { id } });
     return res.json({ message: "Тип удален" });
   }
