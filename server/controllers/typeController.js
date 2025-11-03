@@ -41,9 +41,9 @@ class TypeController {
   async delete(req, res) {
     const { id } = req.params;
     const type = await Type.findByPk(id);
-    console.log(type);
+
     const filePath = path.resolve(__dirname, "..", "static", type.img);
-    console.log(filePath);
+
     fs.unlinkSync(filePath);
 
     await Type.destroy({ where: { id } });
