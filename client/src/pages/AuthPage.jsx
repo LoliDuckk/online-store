@@ -20,6 +20,7 @@ const AuthPage = observer(() => {
   const isLogin = location.pathname === LOGIN_ROUTE;
 
   const [serverError, setServerError] = useState("");
+  const [registerAsAdmin, setRegisterAsAdmin] = useState(false); // Добавлено исключительно для тестирования
 
   const validationSchema = Yup.object().shape({
     login: Yup.string()
@@ -47,10 +48,13 @@ const AuthPage = observer(() => {
         if (isLogin) {
           data = await auth(values.login, values.password);
         } else {
+          // Добавлено исключительно для тестирования
+          const role = registerAsAdmin ? "ADMIN" : "USER";
           data = await registration(
             values.login,
             values.email,
-            values.password
+            values.password,
+            role
           );
         }
 
@@ -128,6 +132,20 @@ const AuthPage = observer(() => {
               {formik.errors.password}
             </Form.Control.Feedback>
           </Form.Group>
+
+          {/* Добавлено исключительно для тестирования */}
+          {!isLogin && (
+            <Form.Group className="mt-3">
+              <Form.Check
+                type="checkbox"
+                id="registerAsAdmin"
+                label="Зарегистрироваться как админ (только для тестов)"
+                checked={registerAsAdmin}
+                onChange={(e) => setRegisterAsAdmin(e.target.checked)}
+                className="text-warning"
+              />
+            </Form.Group>
+          )}
 
           <div className="d-flex justify-content-between align-items-center mt-3">
             {isLogin ? (

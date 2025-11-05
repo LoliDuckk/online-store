@@ -9,7 +9,7 @@ import DeviceItem from "../components/DeviceItem";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const slides = [img1, img1, test];
+  const slides = [img1, test, test];
   const [popularDevices, setPopularDevices] = useState([]);
 
   useEffect(() => {
