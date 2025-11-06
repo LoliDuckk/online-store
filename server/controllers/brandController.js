@@ -1,4 +1,4 @@
-const { Brand } = require("../models/models");
+const { Brand, Device } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class BrandController {
@@ -13,10 +13,29 @@ class BrandController {
     return res.json(brands);
   }
 
-  async delete(req, res) {
-    const { id } = req.params;
-    await Brand.destroy({ where: { id } });
-    return res.json({ message: "Бренд удален" });
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const brand = await Brand.findByPk(id);
+
+      if (!brand) {
+        return next(ApiError.badRequest("Бренд не найден"));
+      }
+
+      const deviceCount = await Device.count({ where: { brandId: id } });
+      if (deviceCount > 0) {
+        return next(
+          ApiError.badRequest(
+            "Нельзя удалить бренд, у которого есть устройства"
+          )
+        );
+      }
+
+      await brand.destroy();
+      return res.json({ message: "Бренд удалён" });
+    } catch (e) {
+      return next(ApiError.badRequest(e.message));
+    }
   }
 }
 

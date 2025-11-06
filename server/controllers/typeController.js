@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 const path = require("path");
 const fs = require("fs");
-const { Type, Category } = require("../models/models");
+const { Type, Category, Device } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class TypeController {
@@ -38,16 +38,30 @@ class TypeController {
     res.json(categories);
   }
 
-  async delete(req, res) {
-    const { id } = req.params;
-    const type = await Type.findByPk(id);
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const type = await Type.findByPk(id);
 
-    const filePath = path.resolve(__dirname, "..", "static", type.img);
+      if (!type) {
+        return next(ApiError.badRequest("Тип не найден"));
+      }
 
-    fs.unlinkSync(filePath);
+      const deviceCount = await Device.count({ where: { typeId: id } });
+      if (deviceCount > 0) {
+        return next(
+          ApiError.badRequest("Нельзя удалить тип, у которого есть устройства")
+        );
+      }
 
-    await Type.destroy({ where: { id } });
-    return res.json({ message: "Тип удален" });
+      const filePath = path.resolve(__dirname, "..", "static", type.img);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+      await Type.destroy({ where: { id } });
+      return res.json({ message: "Тип удален" });
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
+    }
   }
 }
 
