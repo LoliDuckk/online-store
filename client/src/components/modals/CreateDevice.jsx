@@ -170,8 +170,8 @@ const CreateDevice = observer(({ show, onHide, onUpdated }) => {
           </Button>
 
           {info.map((i) => (
-            <Row key={i.number} className="mt-2">
-              <Col md={4}>
+            <Row key={i.number} className="mt-2 gx-2">
+              <Col>
                 <Form.Control
                   placeholder="Введите название"
                   value={i.title}
@@ -180,7 +180,7 @@ const CreateDevice = observer(({ show, onHide, onUpdated }) => {
                   }
                 />
               </Col>
-              <Col md={4}>
+              <Col>
                 <Form.Control
                   placeholder="Введите описание"
                   value={i.description}
@@ -189,7 +189,7 @@ const CreateDevice = observer(({ show, onHide, onUpdated }) => {
                   }
                 />
               </Col>
-              <Col md={4}>
+              <Col xs="auto">
                 <Button
                   variant="outline-danger"
                   onClick={() => removeInfo(i.number)}
