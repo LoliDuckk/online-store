@@ -66,7 +66,7 @@ cd client
 npm run dev
 ```
 
-## Технологии
+## Технологический стек
 **Frontend:** React, MobX  
 **Backend:** Node.js, Express  
 **Database:** PostgreSQL  
