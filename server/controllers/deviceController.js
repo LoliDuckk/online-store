@@ -9,9 +9,12 @@ class DeviceController {
   async create(req, res, next) {
     try {
       let { name, price, brandId, typeId, info } = req.body;
+      if (!req.files || !req.files.img) {
+        return next(ApiError.badRequest("Изображение не загружено"));
+      }
       const { img } = req.files;
       let fileName = uuid.v4() + ".jpg";
-      img.mv(path.resolve(__dirname, "..", "static", fileName));
+      await img.mv(path.resolve(__dirname, "..", "static", fileName));
 
       const device = await Device.create({
         name,
@@ -23,13 +26,15 @@ class DeviceController {
 
       if (info) {
         info = JSON.parse(info);
-        info.forEach((element) => {
-          DeviceInfo.create({
-            title: element.title,
-            description: element.description,
-            deviceId: device.id,
-          });
-        });
+        await Promise.all(
+          info.map((element) =>
+            DeviceInfo.create({
+              title: element.title,
+              description: element.description,
+              deviceId: device.id,
+            }),
+          ),
+        );
       }
 
       return res.json(device);
@@ -86,9 +91,17 @@ class DeviceController {
   async delete(req, res) {
     const { id } = req.params;
     const device = await Device.findByPk(id);
+    if (!device)
+      return res.status(404).json({ message: "Устройство не найдено" });
 
-    const filePath = path.resolve(__dirname, "..", "static", device.img);
-    fs.unlinkSync(filePath);
+    if (device.img) {
+      const filePath = path.resolve(__dirname, "..", "static", device.img);
+      try {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      } catch (e) {
+        // ignore file deletion errors
+      }
+    }
 
     await Device.destroy({ where: { id } });
     return res.json({ message: "Устройство удалено" });

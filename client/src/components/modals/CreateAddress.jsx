@@ -12,14 +12,14 @@ const addressSchema = Yup.object().shape({
   fullName: Yup.string()
     .matches(
       /^[A-ZА-ЯЁ][A-ZА-ЯЁ]+\s[A-ZА-ЯЁ]+$/i,
-      "Введите имя и фамилию через пробел"
+      "Введите имя и фамилию через пробел",
     )
     .required("Обязательное поле"),
 
   phone: Yup.string()
     .matches(
       /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/,
-      "Введите номер в формате +7 (999) 999-99-99"
+      "Введите номер в формате +7 (999) 999-99-99",
     )
     .required("Обязательное поле"),
 
@@ -123,7 +123,7 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
             },
             {
               name: "fullName",
-              label: "ФИО получателя",
+              label: "Фамилия и Имя получателя",
               placeholder: "Иванов Иван",
             },
             {
@@ -142,7 +142,9 @@ const CreateAddress = ({ show, onHide, editingAddress }) => {
             { name: "house", label: "Дом", placeholder: "д. 1" },
           ].map(({ name, label, placeholder, onChange }) => (
             <Form.Group className="mb-2" key={name}>
-              <Form.Label>{label} <span style={{color: "red"}}>*</span></Form.Label>
+              <Form.Label>
+                {label} <span style={{ color: "red" }}>*</span>
+              </Form.Label>
               <Form.Control
                 name={name}
                 placeholder={placeholder}

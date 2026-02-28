@@ -1,15 +1,25 @@
 import axios from "axios";
 
+const defaultApi = import.meta.env.VITE_API_URL || "http://localhost:5000/";
+const normalizeBase = (url) => (url.endsWith("/") ? url : url + "/");
+
+const baseURL = normalizeBase(defaultApi);
+
 const $host = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL,
 });
 
 const $authHost = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL,
 });
 
 const authInterceptor = (config) => {
-  config.headers.authorization = `Bearer ${localStorage.getItem("token")}`;
+  try {
+    const token = localStorage.getItem("token");
+    if (token) config.headers.authorization = `Bearer ${token}`;
+  } catch (e) {
+    // ignore localStorage errors
+  }
   return config;
 };
 
