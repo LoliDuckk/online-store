@@ -20,11 +20,11 @@ cd online-store
 cd client
 npm install
 cp .env.example .env
-mkdir static
 
 cd ../server
 npm install
 cp .env.example .env
+mkdir static
 ```
 
 ### 3. Настройка окружения (.env)
