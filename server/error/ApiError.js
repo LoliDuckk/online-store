@@ -5,7 +5,7 @@ class ApiError extends Error {
     this.message = message;
   }
 
-  static forbiden(message) {
+  static forbidden(message) {
     return new ApiError(403, message);
   }
 
